@@ -1,0 +1,337 @@
+
+<th:block th:fragment>
+    <div class="intro-section-admin"> <!-- intro section -->
+        <!-- navigation-transparent -->
+        <th:block th:include="~{fragments/navbar}"></th:block>
+        <!-- /.navigation -->
+
+        <div class="container">
+            <div class="row">
+
+                <h1 class="intro-title" style="color: #5bc0de;">График на д-р Христов:</h1>
+                <a href="#" class="btn btn-default" data-toggle="modal" data-target="#modalAppointment"
+                   onclick="clearModal()">добавете
+                    час</a>
+
+            </div>
+        </div>
+        <div class="section-space80"><!-- section-space80 -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table id="mytable" class="table table-bordred table-striped">
+
+                                <thead>
+
+                                <th class="w-5">#</th>
+                                <th class="w-10">Име</th>
+                                <th class="w-10">Телефон</th>
+                                <th class="w-10">Имейл</th>
+                                <th class="w-30">Съобщение</th>
+                                <th class="w-15">Дата и час</th>
+                                <th class="w-5">Редактирай</th>
+                                <th class="w-5">Изтрий</th>
+                                </thead>
+
+                                <tbody>
+                                <th:block th:each="appointment,iter : ${appointments}">
+                                    <tr>
+                                        <th scope="row" th:text="${iter.index + 1}"></th>
+                                        <td th:text="${appointment.appointmentName}"></td>
+                                        <td th:text="${appointment.appointmentPhone}"></td>
+                                        <td th:text="${appointment.appointmentEmail}"></td>
+                                        <td th:text="${appointment.appointmentMessage}"></td>
+                                        <td th:text="${#temporals.format(appointment.datetime, 'dd/MM/yyyy HH:mm')}"></td>
+
+                                        <td>
+                                            <p data-placement="top" data-toggle="tooltip" title="Edit">
+                                                <button class="btn btn-info btn-xs" data-title="Edit"
+                                                        data-toggle="modal"
+                                                        data-target="#modalAppointment"
+                                                        th:onclick="|fillModalWithData('${appointment.id}')|"><span
+                                                        class="glyphicon glyphicon-pencil"></span>
+                                                </button>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p data-placement="top" data-toggle="tooltip" title="Delete">
+                                                <button class="btn btn-danger btn-xs" data-title="Delete"
+                                                        data-toggle="modal" data-target="#delete"
+                                                        th:onclick="|passIdToModal('${appointment.id}')|"><span
+                                                        class="glyphicon glyphicon-trash"></span></button>
+                                            </p>
+                                        </td>
+                                    </tr>
+
+                                </th:block>
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="modalAppointment" tabindex="-1" role="dialog" aria-labelledby="modalAppointmentLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAppointmentLabel">Добавяне на час:</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{/appointments/update}"
+                                  th:method="POST" id="newModalForm">
+                                <div class="form-group">
+                                    <input type="hidden" name="id" id="id">
+                                </div>
+                                <div class="form-group">
+                                    <label for="appointmentName" class="text-black">Име и фамилия <span
+                                            class="required">*</span></label>
+                                    <input type="text" class="form-control" id="appointmentName" name="appointmentName"
+                                           required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="appointmentPhone" class="text-black">Телефон <span
+                                            class="required">*</span></label>
+                                    <input type="number" class="form-control" id="appointmentPhone"
+                                           name="appointmentPhone" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="appointmentEmail" class="text-black">Имейл</label>
+                                    <input type="email" class="form-control" id="appointmentEmail"
+                                           name="appointmentEmail">
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="appointmentDate" class="text-black">Дата <span class="required">*</span></label>
+                                            <input type="text" class="form-control" id="appointmentDate"
+                                                   name="appointmentDate"
+                                                   readonly="readonly" onkeydown="return false" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="appointmentTime" class="text-black">Час <span
+                                                    class="required">*</span></label>
+                                            <input type="text" class="form-control" id="appointmentTime"
+                                                   name="appointmentTime"
+                                                   onchange="checkHour()" onkeydown="OnKeyDown(event)" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="appointmentMessage" class="text-black">Съобщение</label>
+                                    <textarea name="appointmentMessage" id="appointmentMessage" class="form-control"
+                                              cols="30"
+                                              rows="10"></textarea>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <input type="submit" value="Запази" class="btn btn-primary">
+                                    <span class="required pull-right">* Полетата са задължителни!</span>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title" id="modalDeleteHeader">Изтриване на запис в графика</h2>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
+                                    class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                                Наистина ли искате да изтриете този запис?
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer ">
+                            <form th:action="@{/appointments/delete}"
+                                  th:method="POST" id="deleteModalForm">
+                                <div class="form-group">
+                                    <input type="hidden" name="id" id="appointmentId">
+                                </div>
+                                <button type="submit" class="btn btn-success"><span
+                                        class="glyphicon glyphicon-ok-sign"></span> Да
+                                </button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal"><span
+                                        class="glyphicon glyphicon-remove"></span> Не
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+        </div>
+    </div>
+    <script>
+
+        function OnKeyDown(event) {
+            event.preventDefault();
+        }
+
+
+        function getBuzyHoursForDate() {
+
+            var selectedDate = document.getElementById("appointmentDate").value;
+
+            $.ajax({
+                type: 'GET',
+                data: {date: selectedDate},
+                url: 'http://hristov.smartcardiology.eu/cardiohristov/appointments/api/getBuzyHoursForDate',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    listFreeHoursByDate(data);
+                },
+                error: function (err) {
+
+                }
+            });
+
+
+        }
+
+        function listFreeHoursByDate(data) {
+
+
+            $('#appointmentTime').timepicker().removeData();
+            document.getElementById("appointmentTime").value = '';
+            var selectedDate = document.getElementById("appointmentDate").value;
+
+            if (document.getElementById("appointmentDate").value.indexOf('четвъртък') != -1) {
+
+
+                $('#appointmentTime').timepicker({
+                    timeFormat: 'H:i',
+                    show2400: true,
+                    minTime: '14:00',
+                    maxTime: '18:00',
+                    disableTimeRanges: data,
+                    'forceRoundTime': true,
+                    'disableTextInput': true
+                });
+            } else if (document.getElementById("appointmentDate").value.indexOf('вторник') != -1) {
+
+                $('#appointmentTime').timepicker({
+                    timeFormat: 'H:i',
+                    show2400: true,
+                    minTime: '08:00',
+                    maxTime: '18:00',
+                    disableTimeRanges: data,
+                    'forceRoundTime': true,
+                    'disableTextInput': true
+                });
+            } else {
+                console.log(document.getElementById("appointmentDate").value);
+                alert('Невалидна дата! Работното време е: Вторник 8:00 ч. - 18:00 ч  и Четвъртък 14:00 ч. - 18:00 ч');
+            }
+        }
+
+        function checkHour() {
+
+            var date = document.getElementById("appointmentDate").value;
+            var time = document.getElementById("appointmentTime").value;
+
+            $.ajax({
+                type: 'GET',
+                data: {date: date, time: time},
+                url: 'http://hristov.smartcardiology.eu/cardiohristov/appointments/api/checkSpecificHour',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+
+                    if (data == true) {
+
+                    } else if (data == false) {
+                        alert('Избраният час е зает. Моля, изберете друг час!');
+                        $('#appointmentTime').timepicker().removeData();
+                        $('.ui-timepicker-wrapper').remove();
+                        document.getElementById("appointmentTime").value = '';
+                        document.getElementById("appointmentDate").value = '';
+                        $('#appointmentDate').val('').datepicker('update');
+                    } else {
+                        alert('Моля, изберете валидна дата от календара!');
+                    }
+
+
+                },
+                error: function (err) {
+
+                }
+            })
+
+        }
+
+        function fillModalWithData(id) {
+
+            var date = document.getElementById("appointmentDate").value;
+            var time = document.getElementById("appointmentTime").value;
+
+            $.ajax({
+                type: 'GET',
+                data: {id: id},
+                url: 'http://hristov.smartcardiology.eu/cardiohristov/appointments/api/getAppointmentById',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    $('#appointmentName').val(data.appointmentName);
+                    $('#appointmentPhone').val(data.appointmentPhone);
+                    $('#appointmentEmail').val(data.appointmentEmail);
+                    $('#appointmentDate').val(data.appointmentDate);
+                    $('#appointmentTime').val(data.appointmentTime);
+                    $('#appointmentMessage').val(data.appointmentMessage);
+                    $('#id').val(data.id);
+
+                    var paragraph = document.getElementById("modalAppointmentLabel");
+                    paragraph.textContent = "Редактиране на час:";
+
+                },
+                error: function (err) {
+
+                }
+            })
+
+        }
+
+        function clearModal() {
+            var paragraph = document.getElementById("modalAppointmentLabel");
+            paragraph.textContent = "Добавяне на час:";
+            $('#appointmentName').val('');
+            $('#appointmentPhone').val('');
+            $('#appointmentEmail').val('');
+            $('#appointmentDate').val('');
+            $('#appointmentTime').val('');
+            $('#appointmentMessage').val('');
+            $('#id').val('');
+        }
+
+        function passIdToModal(id) {
+
+            $('#appointmentId').val(id);
+
+        }
+
+    </script>
+
+
+</th:block>

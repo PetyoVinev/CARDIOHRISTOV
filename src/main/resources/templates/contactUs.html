@@ -1,0 +1,125 @@
+<th:block th:fragment>
+
+    <!-- top header -->
+    <div class="page-header" style="background: none; border-bottom: none" >
+        <!-- page header -->
+        <!-- navigation-transparent -->
+        <th:block th:include="~{fragments/navbar}"></th:block>
+        <!-- /.navigation -->
+
+        <div class="page-banner contact-banner container-fluid no-padding">
+            <!-- Container -->
+            <div class="container">
+                <h3 class="page-title animated fadeInUp" data-animation="fadeInUp" data-delay="100ms" style="animation-delay: 100ms; opacity: 0">КОНТАКТИ</h3>
+                <p class="mb40 animated fadeInUp"  data-animation="fadeInUp" data-delay="400ms" style="animation-delay: 400ms; opacity: 0">Ние вярваме, че всяко взаимодействие с нашите пациенти е възможност!</p>
+               <!-- <ol class="breadcrumb animated fadeInUp" data-animation="fadeInUp" data-delay="700ms" style="animation-delay: 700ms; opacity: 0">
+                    <li><a href="#">Начало</a></li>
+                    <li class="active">Контакти</li>
+                </ol>-->
+            </div><!-- Container /- -->
+            <!-- Shape -->
+            <div class="banner-shape container-fluid no-padding">
+                <div class="col-md-6 col-sm-6 col-xs-6 shape-left no-padding">
+                    <div class="left-shape-blue" style="clip-path: url(#clipPolygon2);">
+                        <svg width="100%" height="100%">
+                            <clipPath id="clipPolygon2" clipPathUnits="objectBoundingBox">
+                                <polygon points="0 0, 0 100, 120 100, 0 0"></polygon>
+                            </clipPath>
+                        </svg>
+                    </div>
+                    <div class="left-shape" style="clip-path: url(#clipPolygon1);">
+                        <svg width="100%" height="100%">
+                            <clipPath id="clipPolygon1" clipPathUnits="objectBoundingBox">
+                                <polygon points="0 0, 0 100, 100 100, 0 0"></polygon>
+                            </clipPath>
+                        </svg>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6 shape-right no-padding">
+                    <div class="right-shape-blue" style="clip-path: url(#clipPolygon3);">
+                        <svg width="100%" height="100%">
+                            <clipPath id="clipPolygon3" clipPathUnits="objectBoundingBox">
+                                <polygon points="1 0.2, 0 1, 0 0.835, 1 0"></polygon>
+                            </clipPath>
+                        </svg>
+                    </div>
+                    <div class="right-shape" style="clip-path: url(#clipPolygon4);">
+                        <svg width="100%" height="100%">
+                            <clipPath id="clipPolygon4" clipPathUnits="objectBoundingBox">
+                                <polygon points="1 0, 0 1, 100 100, 100 0"></polygon>
+                            </clipPath>
+                        </svg>
+                    </div>
+                </div>
+            </div><!-- Shape -->
+        </div>
+    </div>
+    <!-- /.page header -->
+
+
+
+
+        <div class="container">
+            <!-- Contact Us -->
+            <div class="contact-us">
+                <div class="col-md-4 col-sm-4">
+                    <div class="contact-block">
+                        <i class="fa fa-map-marker"></i>
+                        <span>Адрес</span>
+                        <p>гр. Плевен,</p>
+                        <p>ул. Васил Левски №60,</p>
+                        <p>МЦ „Екзакта Медика",</p>
+                        <p>етаж 2, кабинет №5</p>
+
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="contact-block">
+                        <i class="fa fa-mobile"></i>
+                        <span>Телефон</span>
+                        <p>+359 88 338 7951</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="contact-block">
+                        <i class="fa fa-envelope"></i>
+                        <span>Email</span>
+                        <p>hristov@gmail.com</p>
+                    </div>
+                </div>
+            </div><!-- Contact Us /- -->
+        </div>
+
+
+
+
+    <div class="map" id="googleMap"></div>
+
+    <script>
+
+    function initMap() {
+        var myLatLng = {
+            lat: 43.416578,
+            lng: 24.611833
+        };
+
+        var map = new google.maps.Map(document.getElementById('googleMap'), {
+            zoom: 15,
+            center: myLatLng,
+            scrollwheel: false,
+
+        });
+        var image = 'images/map-pin.png';
+        var marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            icon: image,
+            title: 'Hello World!'
+
+        });
+    }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADWUkO9vYwvVaPI-e9MhAd-NQD8FG8LIk&callback=initMap" async defer></script>
+</body>
+
+</th:block>

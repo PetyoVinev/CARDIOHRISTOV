@@ -1,0 +1,118 @@
+
+<th:block th:fragment xmlns:th="http://www.w3.org/1999/xhtml">
+    <!-- top header -->
+    <div class="page-header">
+        <!-- page header -->
+        <!-- navigation-transparent -->
+        <th:block th:include="~{fragments/navbar}"></th:block>
+        <!-- /.navigation -->
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 text-center">
+                    <div class="page-caption">
+                        <h1 class="page-title animated fadeInUp" data-animation="fadeInUp" data-delay="100ms" style="animation-delay: 100ms; opacity: 0">ВСИЧКИ ОТЗИВИ</h1>
+
+                        <th:block sec:authorize="isAuthenticated()">
+                        <a href="#" class="btn btn-default animated fadeInUp"  data-animation="fadeInUp" data-delay="400ms" style="animation-delay: 400ms; opacity: 0" title="Testimonials Write" data-toggle="modal" data-target="#modalTestimonial">
+                            <span>
+                                напишете отзив
+                            </span>
+                        </a>
+                        </th:block>
+
+                        <th:block sec:authorize="isAnonymous()">
+                            <h3 class="page-title animated fadeInUp" data-animation="fadeInUp" data-delay="400ms" style="animation-delay: 400ms; opacity: 0">Влезте в профила си и напишете отзив:</h3>
+                            <a href="#" class="btn btn-default animated fadeInUp" data-animation="fadeInUp" data-delay="700ms" style="animation-delay: 700ms; opacity: 0" data-toggle="modal" data-target="#loginModal">
+                                <span> вход <i class="fa fa-sign-in"></i> </span>
+                            </a>
+                            </label>
+                        </th:block>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- /.page header -->
+    <div class="content">
+        <div class="container">
+            <div class="row mb60">
+
+                <th:block th:each="testimonial,iter : ${testimonials}" th:object="${testimonial}">
+                        <div class="col-lg-4" style="padding-left: 30px;">
+                            <div class="testimonial-icon">
+                                <i class="fa fa-quote-left"></i>
+                            </div>
+                            <div class="testimonial-info"><!-- testimonial info -->
+                                <p class="testimonial-content" th:text="*{content}"></p>
+                                <span class="testimonial-text" th:utext="|- *{username}|"></span><br>
+                                <span class="testimonial-meta">пациент</span>
+                                <th:block sec:authorize="hasRole('ROLE_MODERATOR')">
+                                    <a  data-toggle="modal" data-target="#delete"
+                                       th:onclick="|passIdToModal('${testimonial.id}')|"
+                                       class="btn btn-danger">Премахни!</a>
+                                </th:block>
+                            </div><!-- /.testimonial info -->
+                        </div>
+                </th:block>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <th:block th:include="~{fragments/testimonial-modal}"></th:block>
+    <!-- Modal -->
+
+    <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modalDeleteHeader">Изтриване на отзив</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
+                            class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+
+                </div>
+                <div class="modal-body">
+
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        Наистина ли искате да изтриете този отзив?
+                    </div>
+
+
+                </div>
+                <div class="modal-footer ">
+                    <form th:action="@{/testimonials/delete}"
+                          th:method="POST" id="deleteModalForm">
+                        <div class="form-group">
+                            <input type="hidden" name="id" id="testimonialId">
+                        </div>
+                        <button type="submit" class="btn btn-success"><span
+                                class="glyphicon glyphicon-ok-sign"></span> Да
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><span
+                                class="glyphicon glyphicon-remove"></span> Не
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <script>
+    function passIdToModal(id) {
+
+    $('#testimonialId').val(id);
+
+    }
+    </script>
+
+</th:block>

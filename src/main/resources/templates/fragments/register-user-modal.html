@@ -1,0 +1,91 @@
+<th:block>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Регистрация:</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/register}" th:object="${userRegisterBindingModel}"
+                          th:method="POST" >
+
+
+                        <div class="form-group">
+                            <label for="emailRegister" class="text-black">Имейл <span
+                                    class="required">*</span></label>
+                            <input class="form-control" th:field="*{emailRegister}" th:styleappend="${#fields.hasErrors('emailRegister')} ? border-color: red"
+                                   id="emailRegister" type="email" name="emailRegister" placeholder="Имейл..." required>
+                            <small id="smallEmailErrorText" style="color: red" th:each="error : ${#fields.errors('emailRegister')}" th:utext="|${error} &lt;br /&gt;|"></small>
+
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="passwordRegister" class="text-black">Парола <span
+                                    class="required">*</span></label>
+                            <input type="password" class="form-control" id="passwordRegister" name="passwordRegister" placeholder="Парола..."
+                                   th:field="*{passwordRegister}" th:styleappend="${#fields.hasErrors('passwordRegister')} ? border-color: red"
+                                   required>
+                            <small id="smallPasswordErrorText" style="color: red" th:each="error : ${#fields.errors('passwordRegister')}" th:utext="|${error} &lt;br /&gt;|"></small>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="confirmPassword" class="text-black">Потвърждаване на паролата <span
+                                    class="required">*</span></label>
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Потвърждаване на паролата..."
+                                   th:field="*{confirmPassword}" th:styleappend="${#fields.hasErrors('confirmPassword')} ? border-color: red"
+                                   required>
+                            <small id="smallConfirmPasswordErrorText" style="color: red" th:each="error : ${#fields.errors('confirmPassword')}" th:utext="|${error} &lt;br /&gt;|"></small>
+                        </div>
+
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="firstName" class="text-black">Име <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="firstName" name="firstName"
+                                           th:field="*{firstName}" th:styleappend="${#fields.hasErrors('firstName')} ? border-color: red"
+                                            placeholder="Име..."
+                                            required>
+                                    <small id="smallFirstNameErrorText" style="color: red" th:each="error : ${#fields.errors('firstName')}" th:utext="|${error} &lt;br /&gt;|"></small>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="lastName" class="text-black">Фамилия <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="lastName" name="lastName"
+                                           th:field="*{lastName}" th:styleappend="${#fields.hasErrors('lastName')} ? border-color: red"
+                                            placeholder="Фамилия..." required >
+                                    <small id="smallLastNameErrorText"  style="color: red" th:each="error : ${#fields.errors('lastName')}" th:utext="|${error} &lt;br /&gt;|"></small>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        <hr class="hr" />
+
+                        <div class="form-group">
+                            <input type="submit" value="Регистрирай ме!" class="btn btn-primary">
+                            <span class="required pull-right">* Полетата са задължителни!</span>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</th:block>

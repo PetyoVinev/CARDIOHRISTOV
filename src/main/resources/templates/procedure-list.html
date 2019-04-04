@@ -1,0 +1,53 @@
+<th:block th:fragment xmlns:th="http://www.w3.org/1999/xhtml">
+    <!-- top header -->
+    <div class="page-header">
+        <!-- page header -->
+        <!-- navigation-transparent -->
+        <th:block th:include="~{fragments/navbar}"></th:block>
+        <!-- /.navigation -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 text-center">
+                    <div class="page-caption">
+                        <h1 class="page-title animated fadeInUp" data-animation="fadeInUp" data-delay="100ms" style="animation-delay: 100ms; opacity: 0">ВСИЧКИ УСЛУГИ</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.page header -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+
+
+                <th:block th:each="procedure,iter : ${procedures}" th:object="${procedure}">
+
+                    <div class="col-md-4 col-sm-4">
+                        <div class="procedure-block text-center mb60">
+                            <div class="procedure-img mb30">
+                                <a th:href="@{/procedures/detail/{name}(name=*{name})}" class="imghover"> <img th:src="*{pictureUrl}" class="img-responsive" alt="">
+                                </a>
+                            </div>
+                            <h2><a th:href="@{/procedures/detail/{name}(name=*{name})}" class="heading-title" th:text="*{name}"></a></h2>
+                            <p th:text="*{shortContent}"></p>
+                            <a th:href="@{/procedures/detail/{name}(name=*{name})}" class="btn-link">Прочети Повече</a>
+                        </div>
+                    </div>
+
+                </th:block>
+            </div>
+
+            <th:block sec:authorize="hasRole('ROLE_MODERATOR')">
+                <div class="col-md-6 col-sm-6">
+                    <label>Създайте услуга, като кликнете върху бутона:
+                        <br>
+                        <a th:href="@{/procedures/create}" class="btn btn-default">Създай</a>
+                    </label>
+                </div>
+            </th:block>
+
+
+        </div>
+    </div>
+</th:block>

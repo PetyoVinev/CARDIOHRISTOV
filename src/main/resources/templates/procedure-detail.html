@@ -1,0 +1,137 @@
+
+<th:block th:fragment>
+    <!-- top header -->
+    <div class="page-header">
+        <!-- page header -->
+        <!-- navigation-transparent -->
+        <th:block th:include="~{fragments/navbar}"></th:block>
+        <!-- /.navigation -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 text-center">
+                    <div class="page-caption">
+                        <h1 class="page-title animated fadeInUp" data-animation="fadeInUp" data-delay="100ms" style="animation-delay: 100ms; opacity: 0" th:text="${procedure.name}"></h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.page header -->
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="content-area">
+                        <div class="row">
+                            <div class="col-md-4 col-sm-4">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <div class="sidenav mb60">
+                                            <ul class="listnone no-padding">
+
+                                                <th:block th:each="procedure,iter : ${procedures}"
+                                                          th:object="${procedure}">
+
+                                                        <a th:href="@{/procedures/detail/{name}(name=*{name})}" th:title="*{name}"
+                                                           th:text="*{name}" class="list-group-item list-group-item-action active">
+                                                        </a>
+
+                                                </th:block>
+
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="widget">
+                                            <h2 class="widget-title">Работно време</h2>
+                                            <hr>
+                                            <div class="opening-time">
+                                                <span>Вторник</span><strong class="pull-right">8:00 ч. - 18:00
+                                                ч.</strong>
+                                                <br>
+                                                <span>Четвъртък</span><strong class="pull-right">14:00 ч. – 18:00
+                                                ч.</strong>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                <div class="row">
+                                    <div class="col-md-12 col-sm-12">
+                                        <th:block th:object="${procedure}">
+
+                                            <img th:src="*{pictureUrl}" class="img-responsive mb30" alt="">
+
+                                            <p th:text="*{content}"></p>
+
+                                            <th:block sec:authorize="hasRole('ROLE_MODERATOR')">
+                                                <div class="button-holder d-flex justify-content-around">
+                                                    <a data-toggle="modal" data-target="#delete"
+                                                       th:onclick="|passIdToModal('${procedure.id}')|"
+                                                       class="btn btn-danger">Премахни!</a>
+                                                </div>
+                                            </th:block>
+                                        </th:block>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+
+    <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modalDeleteHeader">Изтриване на услугата</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
+                            class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+
+                </div>
+                <div class="modal-body">
+
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        Наистина ли искате да изтриете тази услуга?
+                    </div>
+
+
+                </div>
+                <div class="modal-footer ">
+                    <form th:action="@{/procedures/delete}"
+                          th:method="POST" id="deleteModalForm">
+                        <div class="form-group">
+                            <input type="hidden" name="id" id="procedureId">
+                        </div>
+                        <button type="submit" class="btn btn-success"><span
+                                class="glyphicon glyphicon-ok-sign"></span> Да
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><span
+                                class="glyphicon glyphicon-remove"></span> Не
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <script>
+        function passIdToModal(id) {
+
+            $('#procedureId').val(id);
+
+        }
+    </script>
+
+</th:block>

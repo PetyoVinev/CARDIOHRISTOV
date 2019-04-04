@@ -1,0 +1,67 @@
+
+
+<th:block th:fragment>
+
+    <div class="">
+        <div class="header" style="z-index:9"><!-- navigation -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-14 col-sm-16">
+                        <div id="navigation" class="navigation">
+                            <ul>
+                                <li class="active">
+                                    <a th:href="@{/}" title="Home" class="animsition-link">Начало</a>
+                                </li>
+                                <li><a th:href="@{/procedures/all}" title="Service"
+                                       class="animsition-link">Услуги</a>
+                                    <ul>
+
+                                        <li><a th:href="@{/procedures/all}" title="Service List">Всички услуги</a>
+                                        </li>
+
+                                        <th:block th:each="procedure,iter : ${procedures}" th:object="${procedure}">
+                                            <li><a th:href="@{/procedures/detail/{name}(name=*{name})}" th:title="*{name}"
+                                                   th:text="*{name}">
+                                            </a></li>
+
+                                        </th:block>
+
+                                    </ul>
+                                </li>
+
+                                <li><a th:href="@{/articles/all}" title="Blog" class="animsition-link">Статии</a>
+                                </li>
+
+                                <li><a th:href="@{/contactUs}" title="Contact Us"
+                                       class="animsition-link">Контакти</a></li>
+
+                                <li><a th:href="@{/testimonials/all}" title="Testimonials" class="animsition-link">Отзиви</a>
+
+                                </li>
+
+                                <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                                    <li><a th:href="@{/appointments/all}" title="Schedule"
+                                           class="animsition-link">График</a>
+                                    </li>
+
+                                    <li><a th:href="@{/profiles}" title="Profiles"
+                                           class="animsition-link">Потребители</a>
+                                    </li>
+                                </th:block>
+
+                                <th:block  sec:authorize="isAnonymous()" th:include="~{fragments/navbar-guest-fragment}"></th:block>
+                                <th:block  sec:authorize="isAuthenticated()" th:include="~{fragments/navbar-user-fragment}"></th:block>
+
+                            </ul>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <th:block sec:authorize="isAnonymous()" th:include="~{fragments/login-user-modal}"></th:block>
+     <th:block sec:authorize="isAnonymous()" th:include="~{fragments/register-user-modal}"></th:block>
+</th:block>

@@ -1,0 +1,56 @@
+<th:block th:fragment>
+    <div class="intro-section" id="procedureCreatePage"> <!-- intro section -->
+        <!-- navigation-transparent -->
+        <th:block th:include="~{fragments/navbar}"></th:block>
+        <!-- /.navigation -->
+        <div class="section-space80"><!-- section-space80 -->
+            <div class="container">
+                <div class="row">
+                    <h1 class="intro-title">Създай нова услуга!</h1>
+                    <hr class="hr-3">
+                    <form class="w-50 mx-auto" enctype="multipart/form-data" th:action="@{/procedures/create}"
+                          th:method="POST">
+                        <div class="d-flex justify-content-between">
+                            <div class="form-group w-80">
+                                <label style="color: white" for="name">Наименование:</label>
+                                <input type="text" name="name" class="form-control" id="name"
+                                       placeholder="Наименование на услугата..."/>
+                            </div>
+                        </div>
+                        <hr class="hr-3">
+                        <div class="d-flex justify-content-between">
+                            <div class="form-group w-80">
+                                <label style="color: white"  for="content" >Описание:</label>
+                                <textarea  class="form-control" name="content"  rows="8" id="content"
+                                       placeholder="Опишете услугата..."></textarea>
+
+                            </div>
+                        </div>
+                        <hr class="hr-3">
+                        <div class="d-flex justify-content-between">
+                            <div class="form-group w-80">
+                                <label style="color: white" for="date">Дата:</label>
+                                <input type="datetime-local" name="date" class="form-control" id="date"
+                                       placeholder="Дата на създаване..."/>
+                            </div>
+                        </div>
+
+                        <hr class="hr-3">
+                        <div class="form-group">
+                            <div class="d-flex justify-content-center">
+                                <label style="color: white" for="procedurePicture">Илюстрация на услугата:</label>
+                            </div>
+                            <div class="w-30 mx-auto">
+                                <input style="color: white;" type="file" class="form-control-file" id="procedurePicture" name="procedurePicture">
+                            </div>
+                        </div>
+                        <hr class="hr-3">
+                        <div class="button-holder d-flex justify-content-around">
+                            <button type="submit" class="btn btn-default">Създай услуга</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>

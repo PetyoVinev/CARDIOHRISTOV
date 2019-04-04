@@ -1,0 +1,125 @@
+<th:block th:fragment="footer">
+    <div class="footer section-space60">
+        <!-- footer -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-sm-3">
+                    <div class="footer-widget"><!-- footer-widget -->
+                        <div class="footer-logo mb30"> <img src="https://res.cloudinary.com/cardiohristov/image/upload/v1549350190/ft-logo.png" alt="" class=""> </div>
+                        <address><i class="fa fa-map-marker"></i>
+                            гр. Плевен,<br>
+                            ул. Васил Левски №60,<br>
+                            МЦ „Екзакта Медика",<br>
+                            етаж 2, кабинет №5
+                        </address>
+                        <ul class="listnone contact">
+                            <li><i class="fa fa-phone"></i>+359 88 338 7951</li>
+                            <li><i class="fa fa-envelope-o"></i>hristov@gmail.com</li>
+                        </ul>
+                    </div>
+                    <!-- /.footer-widget -->
+                </div>
+                <th:block th:if= "${not #lists.isEmpty(procedures)}">
+                <div class="col-md-3 col-sm-3" >
+                    <div class="footer-widget"><!-- footer-widget -->
+                        <h3 class="footer-title">Услуги</h3>
+                        <ul class="listnone bullet bullet-angle-right mb0">
+                            <th:block th:each="procedure,iter : ${procedures}" th:object="${procedure}">
+                            <li><a th:href="@{/procedures/detail/{name}(name=*{name})}" th:text="*{name}"></a></li>
+                            </th:block>
+                        </ul>
+                    </div>
+                    <!-- /.footer-widget -->
+                </div>
+                </th:block>
+                <div class="col-md-2 col-sm-2">
+                    <div class="footer-widget"><!-- footer-widget -->
+                        <h3 class="footer-title">Страници</h3>
+                        <ul class="listnone bullet bullet-angle-right mb0">
+                            <li><a th:href="@{/}" title="Home">Начало</a></li>
+                            <li><a th:href="@{/procedures/all}" title="Services">Услуги</a></li>
+                            <li><a th:href="@{/articles/all}" title="Blog">Статии</a></li>
+                            <li><a th:href="@{/contactUs}" title="Contact Us">Контакти</a></li>
+                            <li><a th:href="@{/testimonials/all}" title="Testimonilas">Отзиви</a></li>
+                        </ul>
+                    </div>
+                    <!-- /.footer-widget -->
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="footer-widget"><!-- footer-widget -->
+                        <h3 class="footer-title">Работно време</h3>
+                        <div class="opening-time">
+                            <span>Вторник: </span><strong>        8:00 ч. - 18:00
+                            ч.</strong>
+                            <br>
+                            <span>Четвъртък: </span><strong>      14:00 ч. – 18:00
+                            ч.</strong>
+                        </div>
+
+
+                    </div>
+                    <!-- /.footer-widget -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.footer -->
+    <div class="tiny-footer"><!-- tiny-footer -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 text-center">
+                    <p>CardioHristov © 2019  |  Privacy Policy</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- /.tiny-footer -->
+    <!-- back to top icon -->
+    <a href=" #0 " class="cd-top" title="Go to top">Top</a>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/menumaker.js}"></script>
+
+    <script type="text/javascript">
+        $("#navigation").menumaker({
+            title: "Меню",
+            format: "multitoggle"
+        });
+    </script>
+
+    <!-- animsition -->
+    <script type="text/javascript" th:src="@{/js/animsition.min.js}"></script>
+    <!--<script type="text/javascript" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/animsition/4.0.2/js/animsition.min.js}"></script>-->
+    <script type="text/javascript" th:src="@{/js/animsition-script.js}"></script>
+
+    <!-- sticky header -->
+    <script type="text/javascript" th:src="@{/js/jquery.sticky.js}"></script>
+    <script type="text/javascript" th:src="@{/js/sticky-header.js}"></script>
+
+    <!-- Back to top script -->
+    <script type="text/javascript" th:src="@{/js/back-to-top.js}"></script>
+
+
+    <!-- DateTime JS-->
+  <!--  <script type="text/javascript" th:src="@{/js/bootstrap-datepicker.js}"></script>-->
+   <!-- <script type="text/javascript" th:src="@{/js/jquery.timepicker.min.js}"></script>-->
+    <script type="text/javascript" th:src="@{ https://cdn.jsdelivr.net/npm/timepicker/jquery.timepicker.min.js}"></script>
+    <script  type="text/javascript" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/locale/bg.js}"></script>
+    <script type="text/javascript" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js}" ></script>
+
+    <!-- carousel-->
+    <script type="text/javascript" th:src="@{/js/owl.carousel.min.js}"></script>
+
+    <!-- custom script-->
+    <script type="text/javascript" th:src="@{/js/script.js}"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script>
+
+
+
+</th:block>

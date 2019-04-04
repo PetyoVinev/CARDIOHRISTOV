@@ -1,0 +1,210 @@
+
+<th:block th:fragment>
+    <!-- top header -->
+    <div class="page-header">
+        <!-- page header -->
+        <!-- navigation-transparent -->
+        <th:block th:include="~{fragments/navbar}"></th:block>
+        <!-- /.navigation -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 text-center">
+                    <div class="page-caption">
+                        <h1 class="page-title animated fadeInUp" data-animation="fadeInUp" data-delay="100ms" style="animation-delay: 100ms; opacity: 0">ПОЛЕЗНА СТАТИЯ ОТ Д-Р ХРИСТОВ</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.page header -->
+
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-sm-8">
+                    <div class="content-area">
+                        <div class="row">
+
+
+                                <div class="col-md-12 col-sm-12" th:object="${article}">
+                                    <div class="post-holder mb40">
+                                        <div class="post-img mb30">
+                                            <a th:href="@{/articles/detail/{title}(title=*{title})}" ><img th:src="*{pictureUrl}" alt="" class="img-responsive"></a>
+                                        </div>
+                                        <div class="post-block">
+                                            <div class="post-header mb20">
+                                                <h1 class="post-title mb30"><a th:href="@{/articles/detail/{title}(title=*{title})}" class="title" th:text="*{title}"></a></h1>
+                                                <div class="post-meta">
+                                                    <!-- post meta -->
+                                                    <i class="fa fa-calendar"></i>
+                                                    <span class="meta-date" th:utext="${#temporals.format(article.writtenOn, 'dd/MM/yyyy HH:mm')}">
+
+                                                    </span>
+                                                <i class="fa fa-comments"></i> <span class="meta-comment" th:utext="|${#lists.size(article.comments)} Коментара|">
+
+                                                    </span>
+                                                </div>
+                                                <!-- /.post meta -->
+                                            </div>
+                                            <hr>
+                                            <div class="post-content">
+                                                <p th:text="*{content}"></p>
+
+                                                <h2 class="mb30">Авторска Публикация</h2>
+                                                <div class="author-post mb40 pinside30 bg-light">
+                                                    <!-- post author -->
+                                                    <div class="row">
+                                                        <div class="col-md-4 col-sm-4">
+                                                            <div class="author-img">
+                                                                <a href="#"><img src="https://res.cloudinary.com/cardiohristov/image/upload/v1547545716/hristov_no_background.png" class="img-responsive"
+                                                                                 alt=""></a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-8 col-sm-8">
+                                                            <div class="author-bio">
+                                                                <div class="author-header">
+                                                                    <h3 class="mb0"><a href="#" class="title">д-р Мартин Христов</a>
+                                                                        <span class="author-meta">(Автор)</span>
+                                                                    </h3>
+                                                                </div>
+                                                                <div class="author-social">
+                                                                    <a href=""><i class="fa fa-facebook-square"></i></a>
+                                                                    <a href=""><i class="fa fa-twitter-square"></i></a>
+                                                                    <a href=""><i class="fa fa-google-plus-square"></i></a>
+                                                                </div>
+                                                                <hr>
+                                                                <div class="author-content">
+                                                                    <p>д-р Христов завършва специалността "Медицина" в МУ-Плевен, през 2013 г. ,
+                                                                        започва специализация по Кардиология в І-ва Клиника по кардиология при УМБАЛ "Д-р Георги
+                                                                        Странски" в Плевен. Специалности - Кардиология/Ендокринология/Вътрешни болести </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                </div>
+
+
+                                                <div class="comments-area mb40">
+                                                    <h2 class="comments-title mb40" th:utext="|(${#lists.size(article.comments)}) Коментара|"> </h2>
+
+
+                                                    <th:block th:each="comment,iter : *{comments}" th:object="${comment}">
+
+                                                    <ul class="comment-list listnone">
+                                                        <li class="comment">
+                                                            <div class="comment-body">
+                                                                <div class="">
+                                                                    <div class="comment-author"><img src="https://res.cloudinary.com/cardiohristov/image/upload/v1548428931/user-anonymus.png"
+                                                                                                     alt="" class=""></div>
+                                                                    <div class="comment-info">
+                                                                        <div class="comment-header">
+                                                                            <h4 class="user-title mb10" th:text="*{username}"></h4>
+                                                                            <div class="comment-meta"><span
+                                                                                    class="comment-meta-date" th:text="${#temporals.format(comment.writtenOn, 'dd/MM/yyyy HH:mm')}"></span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="comment-content">
+                                                                            <p th:text="*{content}"></p>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                    <hr>
+                                                    </th:block>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <th:block sec:authorize="isAuthenticated()">
+                                        <div class="leave-comments outline pinside30">
+                                            <h2 class="reply-title">Напишете мнението си за статията</h2>
+                                            <form class="reply-form" th:action="@{/comments/create}"
+                                                  th:method="POST">
+                                                <div class="row">
+                                                    <!-- Textarea -->
+                                                    <div class="form-group" >
+                                                        <div class="col-md-12">
+                                                            <label class="control-label" for="content">Коментари:</label>
+                                                            <span class="required">*</span>
+                                                            <textarea class="form-control" id="content" name="content"
+                                                                      rows="6" required></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <input type="hidden" name="articleId" id="articleId" th:value="*{id}">
+                                                    </div>
+
+                                                    <div class="col-md-12 col-sm-12">
+                                                        <!-- Button -->
+                                                        <div class="form-group">
+                                                            <button id="singlebutton" name="singlebutton" class="btn btn-default">
+                                                                Изпратете коментар
+                                                            </button>
+                                                            <span class="required pull-right">* Полето е задължително</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </th:block>
+
+                                    <th:block sec:authorize="isAnonymous()">
+                                        <div class="leave-comments outline pinside30">
+                                            <h2 class="reply-title">Напишете коментар след като влезете в профила си:</h2>
+                                            <a href="#" class="btn btn-default" data-toggle="modal" data-target="#loginModal">
+                                                <span> вход <i class="fa fa-sign-in"></i> </span>
+                                            </a>
+                                        </div>
+                                    </th:block>
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="sidebar-area">
+                        <div class="row">
+
+                            <div class="col-md-12 col-sm-12">
+                                <div class="widget widget-recent-post pinside30 mb40">
+                                    <h2 class="widget-title">Списък на статиите:</h2>
+                                    <hr>
+
+                                    <th:block th:each="article,iter : ${articles}" th:object="${article}">
+                                         <div class="recent-block mb20">
+                                             <div class="row">
+                                                 <div class="col-md-4 col-sm-5">
+                                                     <div class="recent-pic">
+                                                         <a th:href="@{/articles/detail/{title}(title=*{title})}"><img th:src="*{pictureUrl}" alt="" class="img-responsive"></a>
+                                                     </div>
+                                                 </div>
+                                                 <div class="col-md-8 col-sm-7">
+                                                     <h3 class="recent-title mb10"><a th:href="@{/articles/detail/{title}(title=*{title})}" class="title" th:text="*{title}"></a></h3>
+                                                     <div class="post-meta">
+                                                         <!-- post meta -->
+                                                         <span class="meta-date" th:text="${#temporals.format(article.writtenOn, 'dd/MM/yyyy HH:mm')}"><i class="fa fa-calendar"></i></span>
+
+                                                     </div>
+                                                     <!-- /.post meta -->
+                                                 </div>
+                                             </div>
+                                         </div>
+                                    </th:block>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</th:block>

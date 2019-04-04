@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="fragments/head"></th:block>
+</head>
+<body class="animsition">
+    <div class="top-header">
+            <th:block th:replace="fragments/top-header"></th:block>
+    </div>
+
+        <th:block th:include="${view}"></th:block>
+
+        <th:block th:replace="fragments/footer"></th:block>
+</body>
+</html>

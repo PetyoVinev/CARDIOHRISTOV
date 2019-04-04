@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:replace="fragments/head"></th:block>
+</head>
+<body class="animsition">
+<div class="top-header">
+    <th:block th:replace="fragments/top-header"></th:block>
+</div>
+
+<div class="intro-section"> <!-- intro section -->
+    <!-- navigation-transparent -->
+    <!--<th:block th:include="~{fragments/navbar}"></th:block>-->
+    <!-- /.navigation -->
+    <div class="section-space80"><!-- section-space80 -->
+        <div class="container">
+            <div class="jumbotron bg-forms d-flex justify-content-center">
+                <div class="container">
+                    <div class="row d-flex justify-content-center">
+                        <h1 class="text-danger">404: Not Found</h1>
+                    </div>
+                    <hr class="hr"/>
+                    <div class="row d-flex justify-content-center">
+                        <p>The page or resource you are looking for cannot be found.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block th:replace="fragments/footer"></th:block>
+</body>
+</html>

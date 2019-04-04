@@ -1,0 +1,285 @@
+
+<th:block th:fragment>
+    <div class="intro-section-admin"> <!-- intro section -->
+        <!-- navigation-transparent -->
+             <th:block th:include="~{fragments/navbar}"></th:block>
+        <!-- /.navigation -->
+
+        <div class="container">
+            <div class="row">
+
+                <h1 class="intro-title" style="color: #5bc0de;">Потребители в сайта на д-р Христов:</h1>
+
+            </div>
+        </div>
+        <div class="section-space80"><!-- section-space80 -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table id="mytable" class="table table-bordred table-striped">
+
+                                <thead>
+
+                                <th class="w-5">#</th>
+                                <th class="w-10">Имейл</th>
+                                <th class="w-10">Име и фамилия</th>
+                                <th class="w-5">Редактирай</th>
+                                <th class="w-5">Изтрий</th>
+                                </thead>
+
+                                <tbody>
+                                <th:block th:each="profile,iter : ${profiles}">
+                                    <tr>
+                                        <th scope="row" th:text="${iter.index + 1}"></th>
+                                        <td th:text="${profile.email}"></td>
+                                        <td th:text="${profile.fullName}"></td>
+                                        <td>
+                                            <p data-placement="top" data-toggle="tooltip" title="Edit">
+                                                <button class="btn btn-info btn-xs" data-title="Edit"
+                                                        data-toggle="modal"
+                                                        data-target="#registerModal"
+                                                        th:onclick="|fillModalWithData('${profile.id}')|"><span
+                                                        class="glyphicon glyphicon-pencil"></span>
+                                                </button>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p data-placement="top" data-toggle="tooltip" title="Delete">
+                                                <button class="btn btn-danger btn-xs" data-title="Delete"
+                                                        data-toggle="modal" data-target="#delete"
+                                                        th:onclick="|passIdToModal('${profile.id}')|"><span
+                                                        class="glyphicon glyphicon-trash"></span></button>
+                                            </p>
+                                        </td>
+                                    </tr>
+
+                                </th:block>
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="registerModalLabel">Редакция на профил:</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form th:action="@{/edit}"
+                                  th:method="POST" th:object="${userRegisterBindingModel}">
+
+                                <div class="form-group">
+                                    <label for="emailRegister" class="text-black">Имейл</label>
+                                    <input class="form-control" th:field="*{emailRegister}"
+                                           th:styleappend="${#fields.hasErrors('emailRegister')} ? border-color: red"
+                                           id="emailRegister" type="email" name="email" placeholder="Имейл..." required
+                                           readonly>
+                                    <small id="smallEmailErrorText" style="color: red"
+                                           th:each="error : ${#fields.errors('emailRegister')}"
+                                           th:utext="|${error} &lt;br /&gt;|"></small>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="passwordRegister" class="text-black">Нова Парола</label>
+                                    <input type="password" class="form-control" id="passwordRegister"
+                                           name="passwordRegister" placeholder="Нова парола..."
+                                           th:field="*{passwordRegister}"
+                                           th:styleappend="${#fields.hasErrors('passwordRegister')} ? border-color: red"
+                                    >
+                                    <small id="smallNewPasswordErrorText" style="color: red"
+                                           th:each="error : ${#fields.errors('passwordRegister')}"
+                                           th:utext="|${error} &lt;br /&gt;|"></small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="confirmPassword" class="text-black">Потвърждаване на паролата</label>
+                                    <input type="password" class="form-control" id="confirmPassword"
+                                           name="confirmPassword" placeholder="Потвърждаване на паролата..."
+                                           th:field="*{confirmPassword}"
+                                           th:styleappend="${#fields.hasErrors('confirmPassword')} ? border-color: red"
+                                    >
+                                    <small id="smallConfirmPasswordErrorText" style="color: red"
+                                           th:each="error : ${#fields.errors('confirmPassword')}"
+                                           th:utext="|${error} &lt;br /&gt;|"></small>
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="firstName" class="text-black">Име </label>
+                                            <input type="text" class="form-control" id="firstName" name="firstName"
+                                                   th:field="*{firstName}"
+                                                   th:styleappend="${#fields.hasErrors('firstName')} ? border-color: red"
+                                                   placeholder="Име..."
+                                                   required>
+                                            <small id="smallFirstNameErrorText" style="color: red"
+                                                   th:each="error : ${#fields.errors('firstName')}"
+                                                   th:utext="|${error} &lt;br /&gt;|"></small>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="lastName" class="text-black">Фамилия </label>
+                                            <input type="text" class="form-control" id="lastName" name="lastName"
+                                                   th:field="*{lastName}"
+                                                   th:styleappend="${#fields.hasErrors('lastName')} ? border-color: red"
+                                                   placeholder="Фамилия..." required>
+                                            <small id="smallLastNameErrorText" style="color: red"
+                                                   th:each="error : ${#fields.errors('lastName')}"
+                                                   th:utext="|${error} &lt;br /&gt;|"></small>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="role" class="text-black">Роля: </label>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-4 mb-3">
+                                        <select id="role" class="form-control" >
+                                            <option id="user-radio" value="user" name="selection" th:text="User"></option>
+                                            <option selected id="moderator-radio" value="moderator"  name="selection" th:text="Moderator"></option>
+                                            <option id="admin-radio" value="admin"  name="selection" th:text="Admin"></option>
+                                            <option id="root-radio" value="root" name="selection" th:text="Root" disabled></option>
+                                        </select>
+                                    </div>
+                                </div>
+
+
+                                <hr class="hr"/>
+
+                                <div class="form-group">
+                                    <input type="submit" value="Редактирай!" class="btn btn-primary">
+                                </div>
+
+
+                            </form>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h2 class="modal-title" id="modalDeleteHeader">Изтриване на потребител</h2>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
+                                    class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+
+                        </div>
+                        <div class="modal-body">
+
+                            <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                                Наистина ли искате да изтриете този потребител?
+                            </div>
+
+
+                        </div>
+                        <div class="modal-footer ">
+                            <form th:action="@{/delete}"
+                                  th:method="POST" id="deleteModalForm">
+                                <div class="form-group">
+                                    <input type="hidden" name="id" id="profileId">
+                                </div>
+                                <button type="submit" class="btn btn-success"><span
+                                        class="glyphicon glyphicon-ok-sign"></span> Да
+                                </button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal"><span
+                                        class="glyphicon glyphicon-remove"></span> Не
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                    <!-- /.modal-content -->
+                </div>
+                <!-- /.modal-dialog -->
+            </div>
+        </div>
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+    <script>
+
+        function fillModalWithData(id) {
+
+            $.ajax({
+                type: 'GET',
+                data: {id: id},
+                url: 'http://hristov.smartcardiology.eu/cardiohristov/api/profile',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+
+
+                    $('#emailRegister').val(data.email);
+                    $('#firstName').val(data.firstName);
+                    $('#lastName').val(data.lastName);
+
+                    $('#id').val(data.id);
+
+
+                    var roles = [[data.roles]];
+
+                    if (roles.indexOf('ROLE_ROOT') > -1) {
+                        $('#root-radio').prop('selected', true);
+                        $('#admin-radio').prop('disabled', true);
+                        $('#moderator-radio').prop('disabled', true);
+                        $('#user-radio').prop('disabled', true);
+                    } else if (roles.indexOf('ROLE_ADMIN') > -1) {
+                        $('#admin-radio').prop('disabled', false);
+                        $('#moderator-radio').prop('disabled', false);
+                        $('#user-radio').prop('disabled', false);
+                        $('#admin-radio').prop('selected', true);
+                    } else if (roles.indexOf('ROLE_MODERATOR') > -1) {
+                        $('#admin-radio').prop('disabled', false);
+                        $('#moderator-radio').prop('disabled', false);
+                        $('#user-radio').prop('disabled', false);
+                        $('#moderator-radio').prop('selected', true);
+                    } else if (roles.indexOf('ROLE_USER') > -1) {
+                        $('#admin-radio').prop('disabled', false);
+                        $('#moderator-radio').prop('disabled', false);
+                        $('#user-radio').prop('disabled', false);
+                        $('#user-radio').prop('selected', true);
+                    }
+
+                },
+                error: function (err) {
+
+                }
+            })
+
+        }
+
+        function passIdToModal(id) {
+
+            $('#profileId').val(id);
+
+        }
+
+    </script>
+    <script type="text/javascript" th:src="@{/js/change-user-role.js}"></script>
+
+
+
+</th:block>

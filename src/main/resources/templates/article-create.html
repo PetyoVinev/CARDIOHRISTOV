@@ -1,0 +1,48 @@
+<th:block th:fragment>
+    <div class="intro-section" id="articleCreatePage"> <!-- intro section -->
+        <!-- navigation-transparent -->
+        <th:block th:include="~{fragments/navbar}"></th:block>
+        <!-- /.navigation -->
+        <div class="section-space80"><!-- section-space80 -->
+            <div class="container">
+                <div class="row">
+                    <h1 class="intro-title">Създай нова статия!</h1>
+                    <hr class="hr-3">
+                    <form class="w-50 mx-auto" enctype="multipart/form-data" th:action="@{/articles/create}"
+                          th:method="POST">
+                        <div class="d-flex justify-content-between">
+                            <div class="form-group w-80">
+                                <label style="color: white" for="title">Заглавие:</label>
+                                <input type="text" name="title" class="form-control" id="title"
+                                       placeholder="Заглавие на статията..."/>
+                            </div>
+                        </div>
+                        <hr class="hr-3">
+                        <div class="d-flex justify-content-between">
+                            <div class="form-group w-80">
+                                <label style="color: white"  for="content" >Съдържание:</label>
+                                <textarea  class="form-control" name="content"  rows="8" id="content"
+                                       placeholder="Текста на статията..."></textarea>
+
+                            </div>
+                        </div>
+
+                        <hr class="hr-3">
+                        <div class="form-group">
+                            <div class="d-flex justify-content-center">
+                                <label style="color: white" for="articlePicture">Илюстрация към статията:</label>
+                            </div>
+                            <div class="w-30 mx-auto">
+                                <input style="color: white;" type="file" class="form-control-file" id="articlePicture" name="articlePicture">
+                            </div>
+                        </div>
+                        <hr class="hr-3">
+                        <div class="button-holder d-flex justify-content-around">
+                            <button type="submit" class="btn btn-default">Създай статия</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</th:block>

@@ -1,0 +1,22 @@
+<th:block th:fragment>
+    <div class="intro-section" id="appointmentCreatePage"> <!-- intro section -->
+        <!-- navigation-transparent -->
+        <th:block th:include="~{fragments/navbar}"></th:block>
+        <!-- /.navigation -->
+        <div class="section-space80"><!-- section-space80 -->
+            <div class="container">
+                <div class="row">
+                    <h1 class="intro-title" th:utext="|Уважаеми г-н/г-жа ${appointment.appointmentName},
+                    <br> Успешно запазихте час за д-р Христов на дата:
+                    <br> ${appointment.appointmentDate} от ${appointment.appointmentTime} часа|"></h1>
+                    <hr class="hr-3">
+
+                        <div class="button-holder d-flex justify-content-around">
+                            <a th:href="@{/appointments/annul(id=${appointment.id})}" class="btn btn-default">Отмени часа</a>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</th:block>

@@ -1,0 +1,424 @@
+
+<th:block th:fragment>
+    <div class="intro-section"> <!-- intro section -->
+        <!-- navigation-transparent -->
+        <th:block th:include="~{fragments/navbar}"></th:block>
+        <!-- /.navigation -->
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-sm-6">
+                    <div class="intro-caption"><!-- intro caption -->
+                        <h1 class="intro-title animated fadeInUp" data-animation="fadeInUp" data-delay="100ms" style="animation-delay: 100ms; opacity: 0">Експерти по здравето на сърцето</h1>
+                        <p class="mb40 animated fadeInUp"  data-animation="fadeInUp" data-delay="400ms" style="animation-delay: 400ms; opacity: 0">Вашето здраве е наш основен приоритет с всеобхватна, достъпна, медицинска
+                            здравна грижа.</p>
+                        <a href="#" class="btn btn-appointment animated fadeInUp" id="indexAppointmentButton" data-animation="fadeInUp" data-delay="700ms" style="animation-delay: 700ms; opacity: 0;"   data-toggle="modal" data-target="#modalAppointment">
+                            <span>
+                                запазете час
+                               <i class="fa fa-calendar faa-tada animated" style="font-size: 20px"></i>
+                            </span>
+                        </a>
+                    </div>
+                    <!-- /.intro caption -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.intro section -->
+
+    <div class="section-space80"><!-- section-space80 -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 text-center mb60">
+                <img src="https://res.cloudinary.com/cardiohristov/image/upload/v1549355098/services/procedures-logo_1.png" alt="" class="">
+                    <h1>Кардиологични услуги</h1>
+                    <p>Научете повече за услугите, които предлагаме:</p>
+                </div>
+                <div class="col-md-12 col-sm-12">
+
+                    <th:block th:each="procedure,iter : ${procedures}" th:object="${procedure}">
+
+                        <div class="col-md-4 col-sm-4">
+                            <div class="procedure-block text-center mb60">
+                                <div class="single-service-area animated wow fadeInUp" data-wow-delay="1" style="visibility: visible; animation-delay: 1s; animation-name: fadeInUp;">
+                                    <div class="procedure-img mb30">
+                                        <a th:href="@{/procedures/detail/{name}(name=*{name})}" class="imghover">
+                                            <img th:src="*{pictureUrl}" class="img-responsive" alt="">
+                                        </a>
+                                    </div>
+                                    <h2><a th:href="@{/procedures/detail/{name}(name=*{name})}" class="heading-title"
+                                           th:text="*{name}"></a>
+                                    </h2>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+                    </th:block>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+    <!-- /.section-space80 -->
+    <div class="pdt80 bg-light"><!-- section-space80 -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 text-center mb60">
+                    <h1>Добре дошли в нашия център по кардиология</h1>
+                    <p>Ние се ангажираме с отлични постижения и пълна грижа за пациентите.</p>
+                </div>
+            </div>
+            <div class="row pdb80">
+                <div class="col-md-4 col-sm-4">
+                    <div class=" feature feature-left">
+                        <div class="feature-icon"><i class="fa fa-paper-plane"></i></div>
+                        <div class="feature-content">
+                            <h2>Нашата мисия</h2>
+                            <p>Phasellus varius molestie urnroin viverrais minec laoreet Pha arius lore molestie dingi
+                                urnroin viverra minec sit apeget est. </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-4">
+                    <div class=" feature feature-left">
+                        <div class="feature-icon"><i class="fa fa-low-vision"></i></div>
+                        <div class="feature-content">
+                            <h2>Визия</h2>
+                            <p>Nunc cursus leo risus non ac efficitur vel sed mauris iaculis finibus ex et viverrras
+                                posuere vel ex at vulputate. </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4 col-sm-4">
+                    <div class=" feature feature-left">
+                        <div class="feature-icon"><i class="fa fa-clock-o"></i></div>
+                        <div class="feature-content">
+                            <h2>Нашето време</h2>
+                            <p>Ние отделяме необходимото време и внимание за нашите пациенти.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="cta-call bg-primary pinside40">
+                <div class="row">
+                    <div class="col-md-9 col-sm-9">
+                        <i class="fa fa-phone"></i>
+                        <h1 class="cta-title text-white">Можете лесно да стигнете до нас 24/7 чрез телефонния номер
+                            по-долу или да запазите час онлайн:</h1>
+                        <h2 class="cta-num text-white">+359 88 338 7951</h2>
+                    </div>
+                    <div class="col-md-3 col-sm-3 cta-btn">
+                        <a href="#" class="btn btn-appointment" data-toggle="modal" data-target="#modalAppointment">
+                            <span>
+                                запазете час
+                               <i class="fa fa-calendar faa-tada animated"></i>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.section-space80 -->
+
+    <div class="section-space80">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="doctor-img">
+                        <img src="https://res.cloudinary.com/cardiohristov/image/upload/v1547545716/hristov_no_background.png"
+                             class=" " alt="">
+                    </div>
+                </div>
+                <div class="col-md-offset-1 col-md-5 col-sm-offset-1 col-sm-5 ">
+                    <h1>д-р Мартин Христов</h1>
+                    <div class="">
+                        <span class="meta-doctor">водещ кардиолог в Кардиологичен кабинет д-р Христов</span>
+                    </div>
+                    <hr>
+                    <div class="doctor-bio mb30">
+                        <ul class="listnone no-padding">
+                            <li><i class="fa fa-circle"></i> <strong>Образование</strong>: Кардиология
+                            </li>
+                            <li><i class="fa fa-circle"></i> <strong>Специалности </strong>:
+                                Кардиология/Ендокринология/Вътрешни болести
+                            </li>
+                            <li><i class="fa fa-circle"></i> <strong>Опит</strong> : практикува от 2013 г.</li>
+                        </ul>
+                    </div>
+
+                    <p class="lead">Завършва специалността "Медицина" в МУ-Плевен, през 2013 г. ,
+                        започва специализация по Кардиология в І-ва Клиника по кардиология при УМБАЛ "Д-р Георги
+                        Странски" в Плевен </p>
+                    <p>За да защитим нашите пациенти и себе си, ние стриктно поддържаме висока стерилна среда, уверени
+                        сме в знанията и уменията си, опрделяме се като екип от високо квалифицирани
+                        професионалисти.</p>
+                    <a href="#" class="btn btn-default">моят екип</a>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.section-space80 -->
+
+    <div class="section-space80 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center mb60">
+                    <h1>Отзиви от Пациенти</h1>
+                    <p>Вашето мнение е важно за нас.</p>
+                </div>
+            </div>
+            <div class="row">
+
+                <th:block th:each="testimonial,iter : ${testimonials}" th:object="${testimonial}">
+
+                    <div class="col-md-6">
+                        <div class="testimonial-icon">
+                            <i class="fa fa-quote-left"></i>
+                        </div>
+                        <div class="testimonial-info"><!-- testimonial info -->
+                            <p class="testimonial-content" th:text="*{content}"></p>
+                            <span class="testimonial-text" th:utext="|- *{username}|"></span><br>
+                            <span class="testimonial-meta">пациент</span>
+                        </div><!-- /.testimonial info -->
+                    </div>
+
+                </th:block>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="section-space80"><!-- section space -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 text-center">
+                    <div class="mb60 section-title">
+                        <h1>Полезни статии от д-р Христов</h1>
+                        <p> За вас сме избрали най-актуалните теми в сферата на кардиоогията и полезни съвети за
+                            здравето на Вашето сърце.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+
+                <th:block th:each="article,iter : ${articles}" th:object="${article}">
+
+
+                    <div class="col-md-4 col-sm-4">
+                        <div class="post-holder mb40">
+                            <div class="post-img mb20">
+                                <a th:href="@{/articles/detail/{title}(title=*{title})}" class="imghover"><img th:src="*{pictureUrl}"
+                                                                                                 alt=""
+                                                                                                 class="img-responsive"></a>
+                            </div>
+                            <div class="post-block">
+                                <div class="post-header mb20">
+                                    <h3 class="post-title mb20">
+                                        <a th:href="@{/articles/detail/{title}(title=*{title})}" class="title" th:text="*{title}"></a>
+                                    </h3>
+                                    <div class="post-meta"><!-- post meta -->
+
+                                        <i class="fa fa-calendar"></i>
+                                        <span class="meta-date"
+                                              th:utext="${#temporals.format(article.writtenOn, 'dd/MM/yyyy HH:mm')}">
+
+                                                    </span>
+                                        <i class="fa fa-comments"></i> <span class="meta-comment" th:utext="|*{commentsCount} Коментара|">
+
+                                                    </span>
+                                    </div>
+                                    <!-- /.post meta -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </th:block>
+
+
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-primary pdt60 pdb60">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-9 col-sm-9">
+                    <h1 class="text-white">Ще получите най-добрата грижа при диагностика и лечение</h1>
+                </div>
+                <div class="col-md-3 col-sm-3">
+                    <a href="#" class="btn btn-appointment" data-toggle="modal" data-target="#modalAppointment">
+                            <span>
+                                запазете час
+                               <i class="fa fa-calendar faa-tada animated"></i>
+                            </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="modalAppointment" tabindex="-1" role="dialog" aria-labelledby="modalAppointmentLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAppointmentLabel">Запазване на час:</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/appointments/create}"
+                          th:method="POST" id="newModalForm">
+                        <div class="form-group">
+                            <label for="appointmentName" class="text-black">Име и фамилия <span
+                                    class="required">*</span></label>
+                            <input type="text" class="form-control" id="appointmentName" name="appointmentName"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appointmentPhone" class="text-black">Телефон <span
+                                    class="required">*</span></label>
+                            <input type="text" class="form-control" id="appointmentPhone" name="appointmentPhone"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="appointmentEmail" class="text-black">Имейл</label>
+                            <input type="email" class="form-control" id="appointmentEmail" name="appointmentEmail">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="appointmentDate" class="text-black">Дата <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="appointmentDate" name="appointmentDate"
+                                           readonly="readonly" onkeydown="return false" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="appointmentTime" class="text-black">Час <span class="required">*</span></label>
+                                    <input type="text" class="form-control" id="appointmentTime" name="appointmentTime"
+                                            onchange="checkHour()" onkeydown="OnKeyDown(event)" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="appointmentMessage" class="text-black">Съобщение</label>
+                            <textarea name="appointmentMessage" id="appointmentMessage" class="form-control" cols="30"
+                                      rows="10"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Запази час" class="btn btn-primary">
+                            <span class="required pull-right">* Полетата са задължителни!</span>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        function OnKeyDown(event) { event.preventDefault(); }
+
+        function getBuzyHoursForDate() {
+            var selectedDate = document.getElementById("appointmentDate").value;
+
+            $.ajax({
+                type: 'GET',
+                data: {date: selectedDate},
+                url: 'http://hristov.smartcardiology.eu/cardiohristov/appointments/api/getBuzyHoursForDate',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    listFreeHoursByDate(data);
+                },
+                error: function (err) {
+
+                }
+            });
+
+        }
+
+        function listFreeHoursByDate(data) {
+
+            $('#appointmentTime').timepicker().removeData();
+            document.getElementById("appointmentTime").value = '';
+            var selectedDate = document.getElementById("appointmentDate").value;
+
+            if (document.getElementById("appointmentDate").value.indexOf('четвъртък') != -1) {
+
+
+                $('#appointmentTime').timepicker({
+                    timeFormat: 'H:i',
+                    show2400: true,
+                    minTime: '14:00',
+                    maxTime: '18:00',
+                    disableTimeRanges: data,
+                    'forceRoundTime': true,
+                    'disableTextInput': true
+                });
+            } else if (document.getElementById("appointmentDate").value.indexOf('вторник') != -1) {
+
+                $('#appointmentTime').timepicker({
+                    timeFormat: 'H:i',
+                    show2400: true,
+                    minTime: '08:00',
+                    maxTime: '18:00',
+                    disableTimeRanges: data,
+                    'forceRoundTime': true,
+                    'disableTextInput': true
+                });
+            } else {
+                console.log(document.getElementById("appointmentDate").value);
+                alert('Невалидна дата! Работното време е: Вторник 8:00 ч. - 18:00 ч  и Четвъртък 14:00 ч. - 18:00 ч');
+            }
+        }
+
+        function checkHour() {
+
+            var date = document.getElementById("appointmentDate").value;
+            var time = document.getElementById("appointmentTime").value;
+
+            $.ajax({
+                type: 'GET',
+                data: {date: date, time: time},
+                url: 'http://hristov.smartcardiology.eu/cardiohristov/appointments/api/checkSpecificHour',
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+
+                    if (data == true) {
+
+                    } else if (data == false) {
+                        alert('Избраният час е зает. Моля, изберете друг час!');
+                        $('#appointmentTime').timepicker().removeData();
+                        $('.ui-timepicker-wrapper').remove();
+                        document.getElementById("appointmentTime").value = '';
+                        document.getElementById("appointmentDate").value = '';
+                        $('#appointmentDate').val('').timepicker('update');
+                    } else {
+                        alert('Моля, изберете валидна дата от календара!');
+                    }
+
+
+                },
+                error: function (err) {
+
+                }
+            })
+
+        }
+
+    </script>
+</th:block>

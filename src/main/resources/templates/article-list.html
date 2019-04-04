@@ -1,0 +1,175 @@
+<th:block th:fragment>
+    <!-- top header -->
+    <div class="page-header">
+        <!-- page header -->
+        <!-- navigation-transparent -->
+        <th:block th:include="~{fragments/navbar}"></th:block>
+        <!-- /.navigation -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 text-center">
+                    <div class="page-caption">
+                        <h1 class="page-title animated fadeInUp" data-animation="fadeInUp" data-delay="100ms" style="animation-delay: 100ms; opacity: 0">ПОЛЕЗНИ СТАТИИ ОТ Д-Р ХРИСТОВ</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.page header -->
+
+    <div class="content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-sm-8">
+                    <div class="content-area">
+                        <div class="row">
+
+                            <th:block th:each="article,iter : ${articles}" th:object="${article}">
+
+                                <div class="col-md-12 col-sm-12">
+                                    <div class="post-holder mb40">
+                                        <div class="post-img mb40">
+                                            <a th:href="@{/articles/detail/{title}(title=*{title})}" class="imghover"><img th:src="*{pictureUrl}" alt="" class="img-responsive"></a>
+                                        </div>
+                                        <div class="post-sticky"></div>
+                                        <div class="post-block">
+                                            <div class="post-header mb20">
+                                                <h1 class="post-title mb30"><a th:href="@{/articles/detail/{title}(title=*{title})}" class="title" th:text="*{title}"></a></h1>
+                                                <div class="post-meta">
+                                                    <!-- post meta -->
+
+                                                    <i class="fa fa-calendar"></i>
+                                                    <span class="meta-date" th:utext="${#temporals.format(article.writtenOn, 'dd/MM/yyyy HH:mm')}">
+
+                                                   </span>
+                                                    <i class="fa fa-comments"></i> <span class="meta-comment" th:utext="|*{commentsCount} Коментара|">
+
+                                                    </span>
+                                                </div>
+                                                <!-- /.post meta -->
+                                            </div>
+                                            <hr>
+                                            <div class="post-content">
+                                                <p th:text="*{shortContent}"></p>
+                                                <a  th:href="@{/articles/detail/{title}(title=*{title})}" class="btn btn-default">Прочети Повече</a>
+
+                                                <th:block sec:authorize="hasRole('ROLE_MODERATOR')">
+                                                        <a data-toggle="modal" data-target="#delete"
+                                                           th:onclick="|passIdToModal('${article.id}')|"
+                                                           class="btn btn-danger">Премахни!</a>
+                                                </th:block>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </th:block>
+
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-4">
+                    <div class="sidebar-area">
+                        <div class="row">
+
+                            <div class="col-md-12 col-sm-12">
+                                <div class="widget widget-recent-post pinside30 mb40">
+                                    <h2 class="widget-title">Списък на статиите:</h2>
+                                    <hr>
+
+
+                                    <th:block th:each="article,iter : ${articles}" th:object="${article}">
+                                         <div class="recent-block mb20">
+                                             <div class="row">
+                                                 <div class="col-md-4 col-sm-5">
+                                                     <div class="recent-pic">
+                                                         <a th:href="@{/articles/detail/{title}(title=*{title})}"><img th:src="*{pictureUrl}" alt="" class="img-responsive"></a>
+                                                     </div>
+                                                 </div>
+                                                 <div class="col-md-8 col-sm-7">
+                                                     <h3 class="recent-title mb10"><a th:href="@{/articles/detail/{title}(title=*{title})}"
+                                                                                      class="title" th:text="*{title}"></a></h3>
+                                                     <div class="post-meta">
+                                                         <!-- post meta -->
+                                                         <span class="meta-date" th:text="${#temporals.format(article.writtenOn, 'dd/MM/yyyy HH:mm')}"><i class="fa fa-calendar"></i></span>
+
+                                                     </div>
+                                                     <!-- /.post meta -->
+                                                 </div>
+                                             </div>
+                                         </div>
+                                    </th:block>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <th:block sec:authorize="hasRole('ROLE_MODERATOR')">
+                <div class="col-md-6 col-sm-6">
+                    <label>Създайте нова статия, като кликнете върху бутона:
+                        <br>
+                        <a th:href="@{/articles/create}" class="btn btn-default">Създай</a>
+                    </label>
+                </div>
+            </th:block>
+
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+
+    <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modalDeleteHeader">Изтриване на статия</h2>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span
+                            class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+
+                </div>
+                <div class="modal-body">
+
+                    <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span>
+                        Наистина ли искате да изтриете тази статия?
+                    </div>
+
+
+                </div>
+                <div class="modal-footer ">
+                    <form th:action="@{/articles/delete}"
+                          th:method="POST" id="deleteModalForm">
+                        <div class="form-group">
+                            <input type="hidden" name="id" id="articleId">
+                        </div>
+                        <button type="submit" class="btn btn-success"><span
+                                class="glyphicon glyphicon-ok-sign"></span> Да
+                        </button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal"><span
+                                class="glyphicon glyphicon-remove"></span> Не
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <script>
+        function passIdToModal(id) {
+
+            $('#articleId').val(id);
+
+        }
+    </script>
+
+</th:block>
