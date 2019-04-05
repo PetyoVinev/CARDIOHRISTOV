@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.vinevweb.cardiohristov.domain.entities.Article;
 import org.vinevweb.cardiohristov.domain.entities.Comment;
 import org.vinevweb.cardiohristov.domain.entities.User;
 import org.vinevweb.cardiohristov.domain.models.service.CommentServiceModel;
@@ -50,14 +51,21 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public void deleteComment(Comment comment) {
+    public void removeCommentFromUserAndDelete(Comment comment) {
         User user = this.userRepository.findById(comment.getUser().getId()).orElse(null);
         user.getComments().remove(comment);
         userRepository.saveAndFlush(user);
         commentRepository.delete(comment);
 
     }
+    @Override
+    public void removeCommentFromArticleAndDelete(Comment comment) {
+        Article article = this.articleRepository.findById(comment.getArticle().getId()).orElse(null);
+        article.getComments().remove(comment);
+        articleRepository.saveAndFlush(article);
+        commentRepository.delete(comment);
 
+    }
 
 
 }

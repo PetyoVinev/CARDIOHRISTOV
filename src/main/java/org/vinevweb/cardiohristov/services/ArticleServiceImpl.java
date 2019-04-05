@@ -13,6 +13,7 @@ import org.vinevweb.cardiohristov.repositories.ArticleRepository;
 import org.vinevweb.cardiohristov.repositories.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -80,12 +81,12 @@ public class ArticleServiceImpl implements ArticleService {
     public void deleteArticle(String id) {
         Article article  = articleRepository.findById(id).orElse(null);
 
-        Set<Comment> comments = article.getComments();
+        Set<Comment> comments = new HashSet<>(article.getComments());
 
         for (Comment comment : comments) {
             article.getComments().remove(comment);
             articleRepository.saveAndFlush(article);
-            commentService.deleteComment(comment);
+            commentService.removeCommentFromUserAndDelete(comment);
         }
 
 

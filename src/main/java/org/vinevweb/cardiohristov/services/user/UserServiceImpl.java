@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.vinevweb.cardiohristov.domain.entities.Article;
+import org.vinevweb.cardiohristov.domain.entities.Comment;
 import org.vinevweb.cardiohristov.domain.entities.User;
 import org.vinevweb.cardiohristov.domain.entities.UserRole;
 import org.vinevweb.cardiohristov.domain.models.service.UserServiceModel;
@@ -13,9 +15,11 @@ import org.vinevweb.cardiohristov.errors.IdNotFoundException;
 import org.vinevweb.cardiohristov.errors.UserAlreadyExistsException;
 import org.vinevweb.cardiohristov.repositories.UserRepository;
 import org.vinevweb.cardiohristov.repositories.UserRoleRepository;
+import org.vinevweb.cardiohristov.services.CommentService;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,13 +29,15 @@ public class UserServiceImpl implements UserService {
     private final UserRoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
+    private final CommentService commentService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserRoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository, UserRoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper, CommentService commentService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.modelMapper = modelMapper;
+        this.commentService = commentService;
     }
 
     @Override
@@ -144,6 +150,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteProfile(UserServiceModel userServiceModel) {
+
+        User  user  = userRepository.findById(userServiceModel.getId()).orElse(null);
+
+        Set<Comment> comments = new HashSet<>(user.getComments());
+
+        for (Comment comment : comments) {
+            user.getComments().remove(comment);
+            userRepository.saveAndFlush(user);
+            commentService.removeCommentFromArticleAndDelete(comment);
+        }
+
         this.userRepository.deleteById(userServiceModel.getId());
     }
 
