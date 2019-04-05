@@ -1,5 +1,4 @@
-
-<th:block th:fragment>
+<th:block th:fragment xmlns:th="http://www.w3.org/1999/xhtml">
     <div class="intro-section-admin"> <!-- intro section -->
         <!-- navigation-transparent -->
              <th:block th:include="~{fragments/navbar}"></th:block>
@@ -169,7 +168,7 @@
                                     <input type="submit" value="Редактирай!" class="btn btn-primary">
                                 </div>
 
-
+                                <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">-->
                             </form>
 
 
@@ -227,7 +226,7 @@
             $.ajax({
                 type: 'GET',
                 data: {id: id},
-                url: 'http://hristov.smartcardiology.eu/cardiohristov/api/profile',
+                url: 'http://localhost:8000/api/profile',
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
 

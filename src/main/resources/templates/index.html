@@ -339,7 +339,7 @@
             $.ajax({
                 type: 'GET',
                 data: {date: selectedDate},
-                url: 'http://hristov.smartcardiology.eu/cardiohristov/appointments/api/getBuzyHoursForDate',
+                url: 'http://localhost:8000/appointments/api/getBuzyHoursForDate',
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
                     listFreeHoursByDate(data);
@@ -394,7 +394,7 @@
             $.ajax({
                 type: 'GET',
                 data: {date: date, time: time},
-                url: 'http://hristov.smartcardiology.eu/cardiohristov/appointments/api/checkSpecificHour',
+                url: 'http://localhost:8000/cardiohristov/appointments/api/checkSpecificHour',
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
 
