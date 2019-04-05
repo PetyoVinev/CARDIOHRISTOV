@@ -47,6 +47,10 @@
                                     <li><a th:href="@{/profiles}" title="Profiles"
                                            class="animsition-link">Потребители</a>
                                     </li>
+
+                                    <li><a th:href="@{/logs}" title="Logs"
+                                           class="animsition-link">Логове</a>
+                                    </li>
                                 </th:block>
 
                                 <th:block  sec:authorize="isAnonymous()" th:include="~{fragments/navbar-guest-fragment}"></th:block>

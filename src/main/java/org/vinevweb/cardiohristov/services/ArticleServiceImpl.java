@@ -32,12 +32,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     private final CommentService commentService;
 
+    private final LogService logService;
+
     @Autowired
-    public ArticleServiceImpl(ArticleRepository articleRepository, ModelMapper modelMapper, UserRepository userRepository, CommentService commentService) {
+    public ArticleServiceImpl(ArticleRepository articleRepository, ModelMapper modelMapper, UserRepository userRepository, CommentService commentService, LogService logService) {
         this.articleRepository = articleRepository;
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
         this.commentService = commentService;
+        this.logService = logService;
     }
 
 
@@ -53,6 +56,10 @@ public class ArticleServiceImpl implements ArticleService {
 
 
         this.articleRepository.save(article);
+
+        this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
+                currentUser.getUsername(),
+                "Създадена е статия със заглавие: " + article.getTitle()});
 
         return true;
     }

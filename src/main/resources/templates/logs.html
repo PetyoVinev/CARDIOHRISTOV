@@ -1,0 +1,56 @@
+<th:block th:fragment xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="intro-section-admin"> <!-- intro section -->
+        <!-- navigation-transparent -->
+             <th:block th:include="~{fragments/navbar}"></th:block>
+        <!-- /.navigation -->
+
+        <div class="container">
+            <div class="row">
+
+                <h1 class="intro-title" style="color: #5bc0de;">Логове на потребителите с администраторски и модераторски права в сайта на д-р Христов:</h1>
+
+            </div>
+        </div>
+        <div class="section-space80"><!-- section-space80 -->
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table id="mytable" class="table table-bordred table-striped">
+
+                                <thead>
+
+                                <th class="w-5">#</th>
+                                <th class="w-10">Дата</th>
+                                <th class="w-10">Потребител</th>
+                                <th class="w-5">Действие</th>
+
+                                </thead>
+
+                                <tbody>
+                                <th:block th:each="log,iter : ${logViewModel}">
+                                    <tr>
+                                        <th scope="row" th:text="${iter.index + 1}"></th>
+                                        <td th:text="${#temporals.format(log.dateTime, 'dd-MM-yyyy HH:mm:ss')}"></td>
+                                        <td th:text="${log.user}"></td>
+                                        <td th:text="${log.event}"></td>
+                                    </tr>
+
+                                </th:block>
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+</th:block>

@@ -14,8 +14,10 @@ import org.vinevweb.cardiohristov.domain.models.service.UserRoleServiceModel;
 import org.vinevweb.cardiohristov.domain.models.service.UserServiceModel;
 import org.vinevweb.cardiohristov.domain.models.view.AllProceduresProcedureViewModel;
 import org.vinevweb.cardiohristov.domain.models.view.AllUsersViewModel;
+import org.vinevweb.cardiohristov.domain.models.view.LogViewModel;
 import org.vinevweb.cardiohristov.domain.models.view.UserViewModel;
 import org.vinevweb.cardiohristov.errors.UserEditFailureException;
+import org.vinevweb.cardiohristov.services.LogService;
 import org.vinevweb.cardiohristov.services.ProcedureService;
 import org.vinevweb.cardiohristov.services.user.UserService;
 
@@ -32,13 +34,15 @@ public class AdminController extends BaseController {
     private final UserService userService;
     private final ModelMapper modelMapper;
     private final ProcedureService procedureService;
+    private final LogService logService;
 
 
     @Autowired
-    public AdminController(UserService userService, ModelMapper modelMapper, ProcedureService procedureService) {
+    public AdminController(UserService userService, ModelMapper modelMapper, ProcedureService procedureService, LogService logService) {
         this.userService = userService;
         this.modelMapper = modelMapper;
         this.procedureService = procedureService;
+        this.logService = logService;
     }
 
     @GetMapping("/profiles")
@@ -131,6 +135,18 @@ public class AdminController extends BaseController {
                 .deleteProfile(userServiceModel);
 
         return super.redirect("/profiles");
+    }
+
+    @GetMapping("/logs")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ModelAndView logs() {
+        return super.view(
+                "logs", "logViewModel",
+                this.logService.getLogsOrderedByDate()
+                        .stream()
+                        .map(log -> this.modelMapper.map(log, LogViewModel.class))
+                        .collect(Collectors.toList())
+        );
     }
 
 
