@@ -2,11 +2,15 @@ package org.vinevweb.cardiohristov.services;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.vinevweb.cardiohristov.domain.entities.Procedure;
+import org.vinevweb.cardiohristov.domain.entities.User;
 import org.vinevweb.cardiohristov.domain.models.service.ProcedureServiceModel;
 import org.vinevweb.cardiohristov.repositories.ProcedureRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -21,10 +25,14 @@ public class ProcedureServiceImpl implements ProcedureService {
 
     private final ModelMapper modelMapper;
 
+    private final LogService logService;
+
+
     @Autowired
-    public ProcedureServiceImpl(ProcedureRepository procedureRepository, ModelMapper modelMapper) {
+    public ProcedureServiceImpl(ProcedureRepository procedureRepository, ModelMapper modelMapper, LogService logService) {
         this.procedureRepository = procedureRepository;
         this.modelMapper = modelMapper;
+        this.logService = logService;
     }
 
 
@@ -34,6 +42,12 @@ public class ProcedureServiceImpl implements ProcedureService {
 
         this.procedureRepository.save(procedure);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User)authentication.getPrincipal();
+
+        this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
+                currentUser.getUsername(),
+                "Създадена е услуга със заглавие: " + procedure.getName()});
         return true;
     }
 
@@ -58,7 +72,17 @@ public class ProcedureServiceImpl implements ProcedureService {
 
     @Override
     public void deleteProcedure(String id) {
+
+        String procedureName = this.procedureRepository.getOne(id).getName();
+
         this.procedureRepository.deleteById(id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User)authentication.getPrincipal();
+
+        this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
+                currentUser.getUsername(),
+                "Изтрита е услуга със заглавие: " + procedureName});
     }
 
 }
