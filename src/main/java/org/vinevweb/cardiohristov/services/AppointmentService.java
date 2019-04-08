@@ -6,6 +6,8 @@ import java.util.List;
 public interface AppointmentService {
     String createAppointment(AppointmentServiceModel appointmentServiceModel);
 
+    String updateAppointment(AppointmentServiceModel appointmentServiceModel);
+
     List<AppointmentServiceModel> getAllByDateTimeAsc();
 
     AppointmentServiceModel findById(String id);

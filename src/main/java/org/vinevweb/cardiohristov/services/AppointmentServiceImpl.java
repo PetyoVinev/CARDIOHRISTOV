@@ -3,8 +3,11 @@ package org.vinevweb.cardiohristov.services;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.vinevweb.cardiohristov.domain.entities.Appointment;
+import org.vinevweb.cardiohristov.domain.entities.User;
 import org.vinevweb.cardiohristov.domain.models.service.AppointmentServiceModel;
 import org.vinevweb.cardiohristov.repositories.AppointmentRepository;
 
@@ -22,10 +25,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final ModelMapper modelMapper;
 
+    private final LogService logService;
+
     @Autowired
-    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, ModelMapper modelMapper) {
+    public AppointmentServiceImpl(AppointmentRepository appointmentRepository, ModelMapper modelMapper, LogService logService) {
         this.appointmentRepository = appointmentRepository;
         this.modelMapper = modelMapper;
+        this.logService = logService;
     }
 
 
@@ -85,7 +91,19 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void deleteAppointment(AppointmentServiceModel appointmentServiceModel) {
+        String appName = appointmentRepository.getOne(appointmentServiceModel.getId()).getAppointmentName();
+        String appDateTime = this.formatDate(appointmentRepository.getOne(appointmentServiceModel.getId()).getDatetime());
         this.appointmentRepository.deleteById(appointmentServiceModel.getId());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User)authentication.getPrincipal();
+
+        this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
+                currentUser.getUsername(),
+                String.format("Изтрит е запазен час на името на %s за %s: ",
+                        appName,
+                        appDateTime)
+                 });
     }
 
     @Override
@@ -101,6 +119,25 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     }
 
+    @Override
+    public String updateAppointment(AppointmentServiceModel appointmentServiceModel) {
+        Appointment appointment = this.modelMapper.map(appointmentServiceModel, Appointment.class);
+        Appointment createdAppointment = this.appointmentRepository.saveAndFlush(appointment);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User)authentication.getPrincipal();
+
+        this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
+                currentUser.getUsername(),
+                String.format("Променен е запазен час на името на %s за %s: ",
+                        appointmentServiceModel.getAppointmentName(),
+                        this.formatDate(appointmentServiceModel.getDatetime()))
+        });
+
+
+        return createdAppointment.getId();
+
+    }
 
     @Override
     public List<AppointmentServiceModel> getAllByDateTimeAsc() {
@@ -124,5 +161,13 @@ public class AppointmentServiceImpl implements AppointmentService {
             appointmentRepository.delete(appointment);
         }
     }
+
+
+    private String formatDate(LocalDateTime dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        return dateTime.format(formatter);
+    }
+
 
 }

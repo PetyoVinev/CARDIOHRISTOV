@@ -105,7 +105,7 @@ public class AppointmentController extends BaseController {
 
 
         this.appointmentService
-                .createAppointment(appointmentServiceModel);
+                .updateAppointment(appointmentServiceModel);
 
         return super.redirect("/appointments/all");
     }
