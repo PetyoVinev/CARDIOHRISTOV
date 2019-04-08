@@ -24,13 +24,14 @@ public class TestimonialServiceImpl implements TestimonialService {
 
     private final TestimonialRepository testimonialRepository;
     private final UserRepository userRepository;
-
+    private final LogService logService;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public TestimonialServiceImpl(TestimonialRepository testimonialRepository, UserRepository userRepository, ModelMapper modelMapper) {
+    public TestimonialServiceImpl(TestimonialRepository testimonialRepository, UserRepository userRepository, LogService logService, ModelMapper modelMapper) {
         this.testimonialRepository = testimonialRepository;
         this.userRepository = userRepository;
+        this.logService = logService;
         this.modelMapper = modelMapper;
     }
 
@@ -76,6 +77,13 @@ public class TestimonialServiceImpl implements TestimonialService {
         user.getTestimonials().remove(testimonial);
         userRepository.saveAndFlush(user);
         this.testimonialRepository.delete(testimonial);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User)authentication.getPrincipal();
+
+        this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
+                currentUser.getUsername(),
+                "Изтрит е отзив с текст: " + testimonial.getContent()});
     }
 
 }

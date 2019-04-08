@@ -2,6 +2,8 @@ package org.vinevweb.cardiohristov.services.user;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,7 +18,9 @@ import org.vinevweb.cardiohristov.errors.UserAlreadyExistsException;
 import org.vinevweb.cardiohristov.repositories.UserRepository;
 import org.vinevweb.cardiohristov.repositories.UserRoleRepository;
 import org.vinevweb.cardiohristov.services.CommentService;
+import org.vinevweb.cardiohristov.services.LogService;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,14 +34,16 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
     private final CommentService commentService;
+    private final LogService logService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserRoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper, CommentService commentService) {
+    public UserServiceImpl(UserRepository userRepository, UserRoleRepository roleRepository, BCryptPasswordEncoder bCryptPasswordEncoder, ModelMapper modelMapper, CommentService commentService, LogService logService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.modelMapper = modelMapper;
         this.commentService = commentService;
+        this.logService = logService;
     }
 
     @Override
@@ -114,6 +120,13 @@ public class UserServiceImpl implements UserService {
 
         this.userRepository.save(userEntity);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User)authentication.getPrincipal();
+
+        this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
+                currentUser.getUsername(),
+                "Редактиран е потребител с имейл: " + userEntity.getUsername()});
+
         return true;
     }
 
@@ -145,6 +158,13 @@ public class UserServiceImpl implements UserService {
 
         this.userRepository.save(userEntity);
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User)authentication.getPrincipal();
+
+        this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
+                currentUser.getUsername(),
+                "Променена е ролята на потребител с имейл: " + userEntity.getUsername()});
+
         return true;
     }
 
@@ -162,6 +182,14 @@ public class UserServiceImpl implements UserService {
         }
 
         this.userRepository.deleteById(userServiceModel.getId());
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User)authentication.getPrincipal();
+
+        this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
+                currentUser.getUsername(),
+                "Изтрит е потребител с имейл: " + user.getUsername()});
+
     }
 
 
