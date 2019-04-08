@@ -16,6 +16,9 @@ import org.vinevweb.cardiohristov.errors.UserRegisterFailureException;
 import org.vinevweb.cardiohristov.services.user.UserService;
 import javax.validation.Valid;
 
+import static org.vinevweb.cardiohristov.common.Constants.PASSWORDS_DID_NOT_MATCH;
+import static org.vinevweb.cardiohristov.common.Constants.USER_REGISTRATION_FAILURE;
+
 @Controller
 public class UserController extends BaseController {
 
@@ -34,7 +37,8 @@ public class UserController extends BaseController {
                                         BindingResult bindingResult) {
 
         if (!userRegisterBindingModel.getPasswordRegister().equals(userRegisterBindingModel.getConfirmPassword())) {
-            bindingResult.addError(new FieldError("userRegisterBindingModel", "passwordRegister", "Паролите не съвпадат!"));
+            bindingResult.addError(new FieldError("userRegisterBindingModel", "passwordRegister",
+                    PASSWORDS_DID_NOT_MATCH));
         }
 
         if (bindingResult.hasErrors()) {
@@ -44,7 +48,7 @@ public class UserController extends BaseController {
         UserServiceModel userServiceModel = this.modelMapper.map(userRegisterBindingModel, UserServiceModel.class);
 
         if (!this.userService.registerUser(userServiceModel)) {
-            throw new UserRegisterFailureException("Registering user " + userServiceModel.getEmail() + " failed.");
+            throw new UserRegisterFailureException(String.format(USER_REGISTRATION_FAILURE, userServiceModel.getEmail()));
         }
 
 

@@ -29,8 +29,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.vinevweb.cardiohristov.common.Constants.*;
+
 @Controller
 public class AdminController extends BaseController {
+
+
 
     private final UserService userService;
     private final ModelMapper modelMapper;
@@ -48,7 +52,7 @@ public class AdminController extends BaseController {
 
     @GetMapping("/profiles")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PageTitle("Потребители")
+    @PageTitle(TITLE_USERS)
     public ModelAndView allProfiles(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         Map<String, Object> stringObjectMap = new HashMap<>();
@@ -86,7 +90,8 @@ public class AdminController extends BaseController {
         UserServiceModel userServiceModel = this.userService.extractUserByEmail(userRegisterBindingModel.getEmailRegister());
 
         if (!userRegisterBindingModel.getPasswordRegister().equals(userRegisterBindingModel.getConfirmPassword())) {
-            bindingResult.addError(new FieldError("userRegisterBindingModel", "passwordRegister", "Паролите не съвпадат!"));
+            bindingResult.addError(new FieldError("userRegisterBindingModel", "passwordRegister",
+                    PASSWORDS_DID_NOT_MATCH));
         }
 
 
@@ -124,7 +129,7 @@ public class AdminController extends BaseController {
             throw new UserEditFailureException("Editing user role" + email + " failed.");
         }
 
-        return "Success";
+        return SUCCESS_MESSAGE;
     }
 
     @PostMapping("/delete")
@@ -141,7 +146,7 @@ public class AdminController extends BaseController {
 
     @GetMapping("/logs")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PageTitle("Логове")
+    @PageTitle(TITLE_LOGS)
     public ModelAndView logs() {
         return super.view(
                 "logs", "logViewModel",

@@ -26,10 +26,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.vinevweb.cardiohristov.common.Constants.APPOINTMENT_CREATE_FAILURE_EXCEPTION;
+import static org.vinevweb.cardiohristov.common.Constants.TITLE_SCHEDULE;
+
 
 @Controller
 @RequestMapping("/appointments")
 public class AppointmentController extends BaseController {
+
+
     private final ModelMapper modelMapper;
     private final AppointmentService appointmentService;
     private final ProcedureService procedureService;
@@ -62,7 +67,8 @@ public class AppointmentController extends BaseController {
     @ResponseBody
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public EditDeleteAppointmentViewModel editDeleteAppointmentViewModel(@RequestParam("id") String id) {
-        EditDeleteAppointmentViewModel  editDeleteAppointmentViewModel = modelMapper.map(appointmentService.findById(id), EditDeleteAppointmentViewModel.class);
+        EditDeleteAppointmentViewModel  editDeleteAppointmentViewModel = modelMapper.map(appointmentService.findById(id),
+                EditDeleteAppointmentViewModel.class);
         editDeleteAppointmentViewModel.setAppointmentTime();
         editDeleteAppointmentViewModel.setAppointmentDate();
         return editDeleteAppointmentViewModel;
@@ -76,7 +82,7 @@ public class AppointmentController extends BaseController {
                                                  BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            throw new AppointmentCreateFailureException("Invalid data for creating appointment!");
+            throw new AppointmentCreateFailureException(APPOINTMENT_CREATE_FAILURE_EXCEPTION);
         }
 
         appointmentCreateBindingModel.setDatetime();
@@ -131,7 +137,7 @@ public class AppointmentController extends BaseController {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PageTitle("График")
+    @PageTitle(TITLE_SCHEDULE)
     public ModelAndView getAppointments(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         Map<String, Object> stringObjectMap = new HashMap<>();

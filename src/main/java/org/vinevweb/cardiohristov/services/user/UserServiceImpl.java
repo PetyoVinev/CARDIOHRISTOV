@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.vinevweb.cardiohristov.domain.entities.Article;
 import org.vinevweb.cardiohristov.domain.entities.Comment;
 import org.vinevweb.cardiohristov.domain.entities.User;
 import org.vinevweb.cardiohristov.domain.entities.UserRole;
@@ -25,6 +24,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.vinevweb.cardiohristov.common.Constants.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService {
         UserDetails userDetails = this.userRepository.findByUsername(email).orElse(null);
 
         if (userDetails == null) {
-            throw new UsernameNotFoundException("Wrong or nonexistent email.");
+            throw new UsernameNotFoundException(WRONG_NON_EXISTENT_EMAIL);
         }
 
         return userDetails;
@@ -61,8 +62,8 @@ public class UserServiceImpl implements UserService {
     public boolean registerUser(UserServiceModel userServiceModel) {
 
 
-        if (this.userRepository.findByUsername(userServiceModel.getEmail()).orElse(null) != null){
-            throw new UserAlreadyExistsException("Registering user " + userServiceModel.getEmail() + " failed. " + "User with that mail already exists!" );
+        if (this.userRepository.findByUsername(userServiceModel.getEmail()).orElse(null) != null) {
+            throw new UserAlreadyExistsException(String.format(USER_ALREADY_EXISTS_ERROR, userServiceModel.getEmail()));
         }
 
         this.seedRolesInDb();
@@ -81,7 +82,7 @@ public class UserServiceImpl implements UserService {
         User userEntity = this.userRepository.findByUsername(email).orElse(null);
 
         if (userEntity == null) {
-            throw new UsernameNotFoundException("Wrong or nonexistent email.");
+            throw new UsernameNotFoundException(WRONG_NON_EXISTENT_EMAIL);
         }
 
         UserServiceModel userServiceModel = this.modelMapper.map(userEntity, UserServiceModel.class);
@@ -95,7 +96,7 @@ public class UserServiceImpl implements UserService {
         User userEntity = this.userRepository.findById(id).orElse(null);
 
         if (userEntity == null) {
-            throw new IdNotFoundException("Wrong or nonexistent id.");
+            throw new IdNotFoundException(WRONG_NON_EXISTENT_ID);
         }
 
         UserServiceModel userServiceModel = this.modelMapper.map(userEntity, UserServiceModel.class);
@@ -109,30 +110,30 @@ public class UserServiceImpl implements UserService {
         User userEntity = this.userRepository.findByUsername(userServiceModel.getEmail()).orElse(null);
 
         if (userEntity == null) {
-            throw new UsernameNotFoundException("Wrong or nonexistent email.");
+            throw new UsernameNotFoundException(WRONG_NON_EXISTENT_EMAIL);
         }
         userEntity.setFirstName(userServiceModel.getFirstName());
         userEntity.setLastName(userServiceModel.getLastName());
 
-        if (userServiceModel.getPasswordRegister() != ""){
+        if (userServiceModel.getPasswordRegister() != "") {
             userEntity.setPassword(this.bCryptPasswordEncoder.encode(userServiceModel.getPasswordRegister()));
         }
 
         this.userRepository.save(userEntity);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User)authentication.getPrincipal();
+        User currentUser = (User) authentication.getPrincipal();
 
-        this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
+        this.logService.addEvent(new String[]{LocalDateTime.now().toString(),
                 currentUser.getUsername(),
-                "Редактиран е потребител с имейл: " + userEntity.getUsername()});
+                USER_HAS_BEEN_EDITED + userEntity.getUsername()});
 
         return true;
     }
 
     @Override
     public List<UserServiceModel> extractAllUsersOrderedAlphabetically() {
-        List<User> userEntities = this.userRepository.findAllOrderedAlphabetically();
+        List<User> userEntities = this.userRepository.findAllByOrderByUsernameAsc();
 
         List<UserServiceModel> userServiceModels = userEntities.stream()
                 .map(u -> {
@@ -151,7 +152,7 @@ public class UserServiceImpl implements UserService {
         User userEntity = this.userRepository.findByUsername(email).orElse(null);
 
         if (userEntity == null) {
-            throw new UsernameNotFoundException("Wrong or nonexistent email.");
+            throw new UsernameNotFoundException(WRONG_NON_EXISTENT_EMAIL);
         }
 
         this.changeUserRole(userEntity, role);
@@ -159,11 +160,11 @@ public class UserServiceImpl implements UserService {
         this.userRepository.save(userEntity);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User)authentication.getPrincipal();
+        User currentUser = (User) authentication.getPrincipal();
 
-        this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
+        this.logService.addEvent(new String[]{LocalDateTime.now().toString(),
                 currentUser.getUsername(),
-                "Променена е ролята на потребител с имейл: " + userEntity.getUsername()});
+                ROLE_HAS_BEEN_CHANGED + userEntity.getUsername()});
 
         return true;
     }
@@ -171,7 +172,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteProfile(UserServiceModel userServiceModel) {
 
-        User  user  = userRepository.findById(userServiceModel.getId()).orElse(null);
+        User user = userRepository.findById(userServiceModel.getId()).orElse(null);
 
         Set<Comment> comments = new HashSet<>(user.getComments());
 
@@ -184,21 +185,21 @@ public class UserServiceImpl implements UserService {
         this.userRepository.deleteById(userServiceModel.getId());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User)authentication.getPrincipal();
+        User currentUser = (User) authentication.getPrincipal();
 
-        this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
+        this.logService.addEvent(new String[]{LocalDateTime.now().toString(),
                 currentUser.getUsername(),
-                "Изтрит е потребител с имейл: " + user.getUsername()});
+                USER_HAS_BEEN_DELETED + user.getUsername()});
 
     }
 
 
     private void seedRolesInDb() {
         if (this.roleRepository.count() == 0) {
-            this.roleRepository.save(new UserRole("ROLE_ROOT"));
-            this.roleRepository.save(new UserRole("ROLE_ADMIN"));
-            this.roleRepository.save(new UserRole("ROLE_MODERATOR"));
-            this.roleRepository.save(new UserRole("ROLE_USER"));
+            this.roleRepository.save(new UserRole(ROLE_ROOT));
+            this.roleRepository.save(new UserRole(ROLE_ADMIN));
+            this.roleRepository.save(new UserRole(ROLE_MODERATOR));
+            this.roleRepository.save(new UserRole(ROLE_USER));
         }
     }
 
@@ -206,10 +207,10 @@ public class UserServiceImpl implements UserService {
         if (this.userRepository.count() == 0) {
             userEntity.setAuthorities(new HashSet<>(this.roleRepository.findAll()));
         } else {
-            UserRole roleUser = this.roleRepository.findByAuthority("ROLE_USER").orElse(null);
+            UserRole roleUser = this.roleRepository.findByAuthority(ROLE_USER).orElse(null);
 
             if (roleUser == null) {
-                throw new IllegalArgumentException("The role does not exists.");
+                throw new IllegalArgumentException(THE_ROLE_DOES_NOT_EXISTS);
             }
 
             userEntity.setAuthorities(new HashSet<>());
@@ -221,12 +222,12 @@ public class UserServiceImpl implements UserService {
         userEntity.getAuthorities().clear();
 
         switch (role.toLowerCase()) {
-            case "admin":
-                userEntity.getAuthorities().add(this.roleRepository.findByAuthority("ROLE_ADMIN").orElse(null));
-            case "moderator":
-                userEntity.getAuthorities().add(this.roleRepository.findByAuthority("ROLE_MODERATOR").orElse(null));
-            case "user":
-                userEntity.getAuthorities().add(this.roleRepository.findByAuthority("ROLE_USER").orElse(null));
+            case ADMIN:
+                userEntity.getAuthorities().add(this.roleRepository.findByAuthority(ROLE_ADMIN).orElse(null));
+            case MODERATOR:
+                userEntity.getAuthorities().add(this.roleRepository.findByAuthority(ROLE_MODERATOR).orElse(null));
+            case USER:
+                userEntity.getAuthorities().add(this.roleRepository.findByAuthority(ROLE_USER).orElse(null));
                 break;
         }
 

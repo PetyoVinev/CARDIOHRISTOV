@@ -6,6 +6,8 @@ import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import static org.vinevweb.cardiohristov.common.Constants.*;
+
 public class AppointmentCreateBindingModel {
 
     private String id;
@@ -37,9 +39,9 @@ public class AppointmentCreateBindingModel {
     }
 
 
-    @NotNull(message = "Полето за име и фамилия не може да е с нулева стойност.")
-    @NotEmpty(message = "Полето за име и фамилия не може да е празно.")
-    @Pattern(regexp = "^[A-Z][a-zA-Z]+ [A-Z][a-zA-Z]+$", message = "Името и фамилията трябва да започват с главна буква, да са изписани с латински букви и да са разделени с интервал")
+    @NotNull(message = APPOINTMENT_NAME_COULD_NOT_BE_NULL)
+    @NotEmpty(message = APPOINTMENT_NAME_COULD_NOT_BE_EMPTY)
+    @Pattern(regexp = APPOINTMENT_NAME_PATTERN, message = APPOINTMENT_NAME_REQUIREMENTS)
     public String getAppointmentName() {
         return appointmentName;
     }
@@ -48,9 +50,9 @@ public class AppointmentCreateBindingModel {
         this.appointmentName = appointmentName;
     }
 
-    @NotNull(message = "Телефонният номер не може да е с нулева стойност.")
-    @NotEmpty(message = "Полето за телефонен номер не може да е празно.")
-    @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$", message = "Невалиден телефонен номер.")
+    @NotNull(message = APPOINTMENT_NUMBER_COULD_NOT_BE_NULL)
+    @NotEmpty(message = APPOINTMENT_NUMBER_COULD_NOT_BE_EMPTY)
+    @Pattern(regexp = APPOINTMENT_NUMBER_PATTERN, message = APPOINTMENT_NUMBER_INVALID_MSG)
     public String getAppointmentPhone() {
         return appointmentPhone;
     }
@@ -67,8 +69,8 @@ public class AppointmentCreateBindingModel {
         this.appointmentEmail = appointmentEmail;
     }
 
-    @NotNull(message = "Полето за дата не може да е с нулева стойност.")
-    @NotEmpty(message = "Полето за дата не може да е празно.")
+    @NotNull(message = APPOINTMENT_DATE_COULD_NOT_BE_NULL)
+    @NotEmpty(message = APPOINTMENT_DATE_COULD_NOT_BE_EMPTY)
     public String getAppointmentDate() {
         return appointmentDate;
     }
@@ -77,8 +79,8 @@ public class AppointmentCreateBindingModel {
         this.appointmentDate = appointmentDate;
     }
 
-    @NotNull(message = "Полето за време не може да е с нулева стойност.")
-    @NotEmpty(message = "Полето за време не може да е празно.")
+    @NotNull(message = APPOINTMENT_TIME_COULD_NOT_BE_NULL)
+    @NotEmpty(message = APPOINTMENT_TIME_COULD_NOT_BE_EMPTY)
     public String getAppointmentTime() {
         return appointmentTime;
     }
@@ -116,7 +118,7 @@ public class AppointmentCreateBindingModel {
         }
 
         String dateAndTimeString =  year + "-" + month + "-" + day + " " + this.appointmentTime;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(APPOINTMENT_DATETIME_FORMAT);
         this.datetime   = LocalDateTime.parse(dateAndTimeString, formatter);
 
     }

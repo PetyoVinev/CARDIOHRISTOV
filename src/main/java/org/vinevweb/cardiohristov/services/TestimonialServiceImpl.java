@@ -17,9 +17,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static org.vinevweb.cardiohristov.common.Constants.TESTIMONIAL_HAS_BEEN_DELETED;
+
 
 @Service
 public class TestimonialServiceImpl implements TestimonialService {
+
 
 
     private final TestimonialRepository testimonialRepository;
@@ -28,7 +31,8 @@ public class TestimonialServiceImpl implements TestimonialService {
     private final ModelMapper modelMapper;
 
     @Autowired
-    public TestimonialServiceImpl(TestimonialRepository testimonialRepository, UserRepository userRepository, LogService logService, ModelMapper modelMapper) {
+    public TestimonialServiceImpl(TestimonialRepository testimonialRepository, UserRepository userRepository,
+                                  LogService logService, ModelMapper modelMapper) {
         this.testimonialRepository = testimonialRepository;
         this.userRepository = userRepository;
         this.logService = logService;
@@ -83,7 +87,7 @@ public class TestimonialServiceImpl implements TestimonialService {
 
         this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
                 currentUser.getUsername(),
-                "Изтрит е отзив с текст: " + testimonial.getContent()});
+                TESTIMONIAL_HAS_BEEN_DELETED + testimonial.getContent()});
     }
 
 }

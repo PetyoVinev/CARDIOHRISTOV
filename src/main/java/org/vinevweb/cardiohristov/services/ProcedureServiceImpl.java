@@ -16,9 +16,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.vinevweb.cardiohristov.common.Constants.*;
+
 
 @Service
 public class ProcedureServiceImpl implements ProcedureService {
+
 
 
     private final ProcedureRepository procedureRepository;
@@ -47,7 +50,7 @@ public class ProcedureServiceImpl implements ProcedureService {
 
         this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
                 currentUser.getUsername(),
-                "Създадена е услуга със заглавие: " + procedure.getName()});
+                PROCEDURE_HAS_BEEN_CREATED + procedure.getName()});
         return true;
     }
 
@@ -82,7 +85,7 @@ public class ProcedureServiceImpl implements ProcedureService {
 
         this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
                 currentUser.getUsername(),
-                "Изтрита е услуга със заглавие: " + procedureName});
+                PROCEDURE_HAS_BEEN_DELETED + procedureName});
     }
 
 }

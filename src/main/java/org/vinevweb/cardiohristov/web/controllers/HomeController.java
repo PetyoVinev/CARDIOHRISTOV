@@ -20,8 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.vinevweb.cardiohristov.common.Constants.TITLE_CONTACTS;
+
 @Controller
 public class HomeController extends BaseController {
+
     private final ModelMapper modelMapper;
     private final ProcedureService procedureService;
     private final TestimonialService testimonialService;
@@ -72,7 +75,7 @@ public class HomeController extends BaseController {
     }
 
     @GetMapping("/contactUs")
-    @PageTitle("Контакти")
+    @PageTitle(TITLE_CONTACTS)
     public ModelAndView contactUs(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         Map<String, Object> stringObjectMap = new HashMap<>();

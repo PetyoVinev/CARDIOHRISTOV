@@ -25,10 +25,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.reverseOrder;
+import static org.vinevweb.cardiohristov.common.Constants.*;
 
 @Controller
 @RequestMapping("/articles")
 public class ArticleController extends BaseController {
+
     private final ModelMapper modelMapper;
     private final CloudinaryService cloudinaryService;
     private final ArticleService articleService;
@@ -44,7 +46,7 @@ public class ArticleController extends BaseController {
     }
 
     @GetMapping("/all")
-    @PageTitle("Статии")
+    @PageTitle(TITLE_ARTICLES)
     public ModelAndView index(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()
@@ -67,7 +69,7 @@ public class ArticleController extends BaseController {
 
     @GetMapping("/create")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    @PageTitle("Статии - Създаване")
+    @PageTitle(TITLE_ARTICLES_CREATE)
     public ModelAndView createArticle(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()
@@ -104,7 +106,7 @@ public class ArticleController extends BaseController {
     }
 
     @GetMapping("/detail/{title}")
-    @PageTitle("Полезна статия")
+    @PageTitle(TITLE_SINGLE_ARTICLE)
     public ModelAndView getDetail(@PathVariable String title , @ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel){
 
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()

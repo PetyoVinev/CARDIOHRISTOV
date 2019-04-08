@@ -15,10 +15,13 @@ import org.vinevweb.cardiohristov.services.CommentService;
 
 import java.io.UnsupportedEncodingException;
 
+import static org.vinevweb.cardiohristov.common.Constants.COMMENT_CREATION_ERROR;
+
 
 @Controller
 @RequestMapping("/comments")
 public class CommentController extends BaseController {
+
     private final ModelMapper modelMapper;
 
     private final CommentService commentService;
@@ -41,7 +44,7 @@ public class CommentController extends BaseController {
 
         boolean result = commentService.createComment(commentServiceModel);
         if (!result) {
-            throw new CommentCreateFailureException("Error occurred during comment creation.");
+            throw new CommentCreateFailureException(COMMENT_CREATION_ERROR);
         }
 
         String url = "/articles/detail/" + articleService.findById(createCommentBindingModel.getArticleId()).getTitle();

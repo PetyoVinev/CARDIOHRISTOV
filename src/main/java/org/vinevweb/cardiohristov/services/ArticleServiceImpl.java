@@ -19,9 +19,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.vinevweb.cardiohristov.common.Constants.*;
+
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
+
 
 
     private final ArticleRepository articleRepository;
@@ -59,7 +62,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
                 currentUser.getUsername(),
-                "Създадена е статия със заглавие: " + article.getTitle()});
+                ARTICLE_HAS_BEEN_CREATED + article.getTitle()});
 
         return true;
     }
@@ -104,6 +107,6 @@ public class ArticleServiceImpl implements ArticleService {
 
         this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
                 currentUser.getUsername(),
-                "Изтрита е статия със заглавие: " + article.getTitle()});
+                ARTICLE_HAS_BEEN_DELETED + article.getTitle()});
     }
 }

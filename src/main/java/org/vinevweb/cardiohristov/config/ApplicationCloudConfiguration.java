@@ -9,6 +9,11 @@ import java.util.HashMap;
 
 @Configuration
 public class ApplicationCloudConfiguration {
+
+    public static final String CLOUD_NAME = "cloud_name";
+    public static final String API_KEY = "api_key";
+    public static final String API_SECRET = "api_secret";
+
     @Value("${cloudinary.cloud-name}")
     private String cloudApiName;
 
@@ -21,9 +26,9 @@ public class ApplicationCloudConfiguration {
     @Bean
     public Cloudinary cloudinary() {
         return new Cloudinary(new HashMap<String, Object>(){{
-            put("cloud_name", cloudApiName);
-            put("api_key", cloudApiKey);
-            put("api_secret", cloudApiSecret);
+            put(CLOUD_NAME, cloudApiName);
+            put(API_KEY, cloudApiKey);
+            put(API_SECRET, cloudApiSecret);
         }});
     }
 }

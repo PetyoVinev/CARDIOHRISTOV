@@ -20,9 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.vinevweb.cardiohristov.common.Constants.*;
+
 @Controller
 @RequestMapping("/procedures")
 public class ProcedureController extends BaseController {
+
+
     private final ModelMapper modelMapper;
     private final CloudinaryService cloudinaryService;
     private final ProcedureService procedureService;
@@ -35,7 +39,7 @@ public class ProcedureController extends BaseController {
     }
 
     @GetMapping("/all")
-    @PageTitle("Услуги")
+    @PageTitle(TITLE_PROCEDURES)
     public ModelAndView getAll(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()
@@ -47,7 +51,7 @@ public class ProcedureController extends BaseController {
 
     @GetMapping("/create")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    @PageTitle("Създаване на услуга")
+    @PageTitle(TITLE_CREATE_PROCEDURE)
     public ModelAndView createProcedure(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()
@@ -67,7 +71,7 @@ public class ProcedureController extends BaseController {
         /*String pictureUrl = this.cloudinaryService.uploadImage(procedureCreateBindingModel.getProcedurePicture());*/
         String pictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq6jS89uE7QegpxXMefUXPFEY04QFVAir55Fu7RN3rBe81YbFuCQ";
         if (pictureUrl == null) {
-            throw new ProcedureCreateFailureException("Procedure Picture upload failed.");
+            throw new ProcedureCreateFailureException(PROCEDURE_PICTURE_UPLOAD_FAILED);
         }
 
         procedureServiceModel.setPictureUrl(pictureUrl);
@@ -76,14 +80,14 @@ public class ProcedureController extends BaseController {
                 .createProcedure(procedureServiceModel);
 
         if (!result) {
-            throw new ProcedureCreateFailureException("Procedure creation failed.");
+            throw new ProcedureCreateFailureException(PROCEDURE_CREATION_FAILED);
         }
 
         return this.redirect("/procedures/all");
     }
 
     @GetMapping("/detail/{name}")
-    @PageTitle("Описание на услугата")
+    @PageTitle(TITLE_SINGLE_PROCEDURE)
     public ModelAndView getDetail(@PathVariable String name, @ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel ){
 
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()

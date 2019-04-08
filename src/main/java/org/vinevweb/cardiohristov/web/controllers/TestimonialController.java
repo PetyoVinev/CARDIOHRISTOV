@@ -21,9 +21,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.vinevweb.cardiohristov.common.Constants.*;
+
 @Controller
 @RequestMapping("/testimonials")
 public class TestimonialController extends BaseController {
+
     private final ModelMapper modelMapper;
     private final TestimonialService testimonialService;
     private final ProcedureService procedureService;
@@ -38,7 +41,7 @@ public class TestimonialController extends BaseController {
     }
 
     @GetMapping("/all")
-    @PageTitle("Отзиви")
+    @PageTitle(TITLE_TESTIMONIALS)
     public ModelAndView index(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         Map<String, Object> stringObjectMap = new HashMap<>();
@@ -68,7 +71,7 @@ public class TestimonialController extends BaseController {
 
         boolean result = testimonialService.createTestimonial(testimonialServiceModel);
         if (!result) {
-            throw new TestimonialCreateFailureException("Error occurred during testimonial creation.");
+            throw new TestimonialCreateFailureException(TESTIMONIAL_CREATION_ERROR);
         }
 
         return this.redirect("/testimonials/all");

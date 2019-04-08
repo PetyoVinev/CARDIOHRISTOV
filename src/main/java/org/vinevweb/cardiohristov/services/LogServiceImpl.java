@@ -17,8 +17,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.vinevweb.cardiohristov.common.Constants.LOGGER_FULL_DATETIME_FORMAT;
+
 @Service
 public class LogServiceImpl implements LogService {
+
 
     private final LogRepository logRepository;
     private final UserRepository userRepository;
@@ -71,7 +74,7 @@ public class LogServiceImpl implements LogService {
     }
 
     private LocalDateTime formatDate(String dateTimeStr) {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter format = DateTimeFormatter.ofPattern(LOGGER_FULL_DATETIME_FORMAT);
 
         return LocalDateTime
                 .parse(dateTimeStr.replace("T", " ")

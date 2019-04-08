@@ -16,10 +16,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.vinevweb.cardiohristov.common.Constants.*;
+
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
-
 
     private final AppointmentRepository appointmentRepository;
 
@@ -43,7 +44,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         String month  = date.substring(3,5);
         String year  = date.substring(6, date.indexOf(" ") );
         String dateAndTimeString =  year + "-" + month + "-" + day + " " + time;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(APPOINTMENT_DATETIME_FORMAT);
         LocalDateTime dateTime = LocalDateTime.parse(dateAndTimeString, formatter);
 
         Appointment appointment = this.appointmentRepository.findAppointmentByDatetime(dateTime);
@@ -60,9 +61,9 @@ public class AppointmentServiceImpl implements AppointmentService {
         }else {
             year  = date.substring(6, date.length() );
         }
-        String dateAndTimeStartString =  year + "-" + month + "-" + day + " " + "00:01";
-        String dateAndTimeEndString =  year + "-" + month + "-" + day + " " + "23:59";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String dateAndTimeStartString =  year + "-" + month + "-" + day + " " + START_TIME;
+        String dateAndTimeEndString =  year + "-" + month + "-" + day + " " + END_TIME;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(APPOINTMENT_DATETIME_FORMAT);
         LocalDateTime dateTimeStart = LocalDateTime.parse(dateAndTimeStartString, formatter);
         LocalDateTime dateTimeEnd = LocalDateTime.parse(dateAndTimeEndString, formatter);
 
@@ -100,7 +101,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
                 currentUser.getUsername(),
-                String.format("Изтрит е запазен час на името на %s за %s: ",
+                String.format(APPOINTMENT_HAS_BEEN_DELETED,
                         appName,
                         appDateTime)
                  });
@@ -129,7 +130,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
                 currentUser.getUsername(),
-                String.format("Променен е запазен час на името на %s за %s: ",
+                String.format(APPOINTMENT_HAS_BEEN_EDITED,
                         appointmentServiceModel.getAppointmentName(),
                         this.formatDate(appointmentServiceModel.getDatetime()))
         });
@@ -155,7 +156,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         return modelMapper.map(appointmentRepository.findById(id).orElse(null), AppointmentServiceModel.class);
     }
 
-    @Scheduled(cron = "0 0 1 * * SUN")
+    @Scheduled(cron = CRON_VALUE)
     public void cleanScheduleFromOldAppointments() {
         for (Appointment appointment : this.appointmentRepository.findAppointmentsByDatetimeBefore(LocalDateTime.now())) {
             appointmentRepository.delete(appointment);
@@ -164,7 +165,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
     private String formatDate(LocalDateTime dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(APPOINTMENT_DATETIME_FORMAT);
 
         return dateTime.format(formatter);
     }

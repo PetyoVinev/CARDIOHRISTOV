@@ -4,6 +4,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 import java.time.LocalDateTime;
 
+import static org.vinevweb.cardiohristov.common.Constants.PROCEDURE_DATETIME_FORMAT;
+
 public class ProcedureCreateBindingModel {
 
 
@@ -11,7 +13,7 @@ public class ProcedureCreateBindingModel {
 
     private String content;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm", iso = DateTimeFormat.ISO.DATE_TIME)
+    @DateTimeFormat(pattern = PROCEDURE_DATETIME_FORMAT, iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime date;
 
     private MultipartFile procedurePicture;

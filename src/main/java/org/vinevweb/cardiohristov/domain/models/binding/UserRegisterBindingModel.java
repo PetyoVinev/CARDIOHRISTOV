@@ -6,7 +6,11 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import static org.vinevweb.cardiohristov.common.Constants.*;
+
 public class UserRegisterBindingModel {
+
+
 
     private String emailRegister;
     private String passwordRegister;
@@ -17,9 +21,9 @@ public class UserRegisterBindingModel {
     public UserRegisterBindingModel() {
     }
 
-    @NotNull(message = "Имейлът не може да е с нулева стойност.")
-    @NotEmpty(message = "Полето за имайл не може да е празно.")
-    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", message = "Невалиден имайл.")
+    @NotNull(message = USER_EMAIL_COULD_NOT_BE_NULL)
+    @NotEmpty(message = USER_EMAIL_COULD_NOT_BE_EMPTY)
+    @Pattern(regexp = USER_EMAIL_PATTERN, message = INVALID_EMAIL)
     public String getEmailRegister() {
         return emailRegister;
     }
@@ -29,9 +33,9 @@ public class UserRegisterBindingModel {
     }
 
 
-    @NotNull(message = "Паролата не може да е с нулева стойност.")
-    @NotEmpty(message = "Полето за паролата не може да е празно.")
-    @Length(min = 4, max = 20, message = "Паролата трябва да е с дължина между 4 и 20 символа.")
+    @NotNull(message = USER_PASSWORD_COULD_NOT_BE_NULL)
+    @NotEmpty(message = USER_PASSWORD_COULD_NOT_BE_EMPTY)
+    @Length(min = 4, max = 20, message = USER_PASSWORD_REQUIREMENTS)
     public String getPasswordRegister() {
         return passwordRegister;
     }
@@ -41,9 +45,9 @@ public class UserRegisterBindingModel {
     }
 
 
-    @NotNull(message = "Паролата не може да е с нулева стойност.")
-    @NotEmpty(message = "Полето за паролата не може да е празно.")
-    @Length(min = 4, max = 20, message = "Паролата трябва да е с дължина между 4 и 20 символа.")
+    @NotNull(message = USER_PASSWORD_COULD_NOT_BE_NULL)
+    @NotEmpty(message = USER_PASSWORD_COULD_NOT_BE_EMPTY)
+    @Length(min = 4, max = 20, message = USER_PASSWORD_REQUIREMENTS)
     public String getConfirmPassword() {
         return this.confirmPassword;
     }
@@ -52,10 +56,10 @@ public class UserRegisterBindingModel {
         this.confirmPassword = confirmPassword;
     }
 
-    @NotNull(message = "Името не може да е с нулева стойност.")
-    @NotEmpty(message = "Полето за името не може да е празно.")
-    @Length(min = 2, message = "Името трябва да съдържа минимум 2 букви.")
-    @Pattern(regexp = "^[A-Z][a-zA-Z]+", message = "Името трябва да започва с главна буква, и да е изписано с латински букви.")
+    @NotNull(message = USER_NAME_COULD_NOT_BE_NULL)
+    @NotEmpty(message = USER_NAME_COULD_NOT_BE_EMPTY)
+    @Length(min = 2, message = USER_NAME_LENGTH_REQUIREMENTS)
+    @Pattern(regexp = USER_NAME_PATTERN, message = USER_NAME_REQUIREMENTS)
     public String getFirstName() {
         return this.firstName;
     }
@@ -64,10 +68,10 @@ public class UserRegisterBindingModel {
         this.firstName = firstName;
     }
 
-    @NotNull(message = "Фамилията не може да е с нулева стойност.")
-    @NotEmpty(message = "Полето за фамилия не може да е празно.")
-    @Length(min = 2, message = "Фамилията трябва да съдържа минимум 2 букви.")
-    @Pattern(regexp = "^[A-Z][a-zA-Z]+", message = "Фамилията трябва да започва с главна буква, и да е изписана с латински букви.")
+    @NotNull(message = USER_FAMILYNAME_COULD_NOT_BE_NULL)
+    @NotEmpty(message = USER_FAMILYNAME_COULD_NOT_BE_EMPTY)
+    @Length(min = 2, message = USER_FAMILYNAME_LENGTH_REQUIREMENTS)
+    @Pattern(regexp = USER_FAMILYNAME_PATTERN, message = USER_FAMILYNAME_REQUIREMENTS)
     public String getLastName() {
         return this.lastName;
     }
