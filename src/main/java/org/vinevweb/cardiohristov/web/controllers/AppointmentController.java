@@ -1,4 +1,4 @@
-package org.vinevweb.cardiohristov.controllers;
+package org.vinevweb.cardiohristov.web.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import org.vinevweb.cardiohristov.domain.models.view.EditDeleteAppointmentViewMo
 import org.vinevweb.cardiohristov.errors.AppointmentCreateFailureException;
 import org.vinevweb.cardiohristov.services.AppointmentService;
 import org.vinevweb.cardiohristov.services.ProcedureService;
+import org.vinevweb.cardiohristov.web.annotations.PageTitle;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -130,6 +131,7 @@ public class AppointmentController extends BaseController {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PageTitle("График")
     public ModelAndView getAppointments(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         Map<String, Object> stringObjectMap = new HashMap<>();

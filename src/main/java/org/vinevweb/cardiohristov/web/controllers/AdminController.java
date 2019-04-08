@@ -1,4 +1,4 @@
-package org.vinevweb.cardiohristov.controllers;
+package org.vinevweb.cardiohristov.web.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import org.vinevweb.cardiohristov.errors.UserEditFailureException;
 import org.vinevweb.cardiohristov.services.LogService;
 import org.vinevweb.cardiohristov.services.ProcedureService;
 import org.vinevweb.cardiohristov.services.user.UserService;
+import org.vinevweb.cardiohristov.web.annotations.PageTitle;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -47,6 +48,7 @@ public class AdminController extends BaseController {
 
     @GetMapping("/profiles")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PageTitle("Потребители")
     public ModelAndView allProfiles(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         Map<String, Object> stringObjectMap = new HashMap<>();
@@ -139,6 +141,7 @@ public class AdminController extends BaseController {
 
     @GetMapping("/logs")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PageTitle("Логове")
     public ModelAndView logs() {
         return super.view(
                 "logs", "logViewModel",

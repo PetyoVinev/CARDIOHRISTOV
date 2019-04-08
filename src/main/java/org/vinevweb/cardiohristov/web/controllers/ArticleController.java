@@ -1,4 +1,4 @@
-package org.vinevweb.cardiohristov.controllers;
+package org.vinevweb.cardiohristov.web.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import org.vinevweb.cardiohristov.errors.ArticleCreateFailureException;
 import org.vinevweb.cardiohristov.services.ArticleService;
 import org.vinevweb.cardiohristov.services.CloudinaryService;
 import org.vinevweb.cardiohristov.services.ProcedureService;
+import org.vinevweb.cardiohristov.web.annotations.PageTitle;
 
 import java.io.IOException;
 import java.util.*;
@@ -43,6 +44,7 @@ public class ArticleController extends BaseController {
     }
 
     @GetMapping("/all")
+    @PageTitle("Статии")
     public ModelAndView index(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()
@@ -65,6 +67,7 @@ public class ArticleController extends BaseController {
 
     @GetMapping("/create")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
+    @PageTitle("Статии - Създаване")
     public ModelAndView createArticle(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()
@@ -101,6 +104,7 @@ public class ArticleController extends BaseController {
     }
 
     @GetMapping("/detail/{title}")
+    @PageTitle("Полезна статия")
     public ModelAndView getDetail(@PathVariable String title , @ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel){
 
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()

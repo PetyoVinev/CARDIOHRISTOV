@@ -1,4 +1,4 @@
-package org.vinevweb.cardiohristov.controllers;
+package org.vinevweb.cardiohristov.web.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,14 +7,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.vinevweb.cardiohristov.domain.models.binding.ProcedureCreateBindingModel;
-import org.vinevweb.cardiohristov.domain.models.binding.ProfileDeleteBindingModel;
 import org.vinevweb.cardiohristov.domain.models.binding.UserRegisterBindingModel;
 import org.vinevweb.cardiohristov.domain.models.service.ProcedureServiceModel;
-import org.vinevweb.cardiohristov.domain.models.service.UserServiceModel;
 import org.vinevweb.cardiohristov.domain.models.view.AllProceduresProcedureViewModel;
 import org.vinevweb.cardiohristov.errors.ProcedureCreateFailureException;
 import org.vinevweb.cardiohristov.services.CloudinaryService;
 import org.vinevweb.cardiohristov.services.ProcedureService;
+import org.vinevweb.cardiohristov.web.annotations.PageTitle;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,6 +35,7 @@ public class ProcedureController extends BaseController {
     }
 
     @GetMapping("/all")
+    @PageTitle("Услуги")
     public ModelAndView getAll(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()
@@ -47,6 +47,7 @@ public class ProcedureController extends BaseController {
 
     @GetMapping("/create")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
+    @PageTitle("Създаване на услуга")
     public ModelAndView createProcedure(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()
@@ -82,6 +83,7 @@ public class ProcedureController extends BaseController {
     }
 
     @GetMapping("/detail/{name}")
+    @PageTitle("Описание на услугата")
     public ModelAndView getDetail(@PathVariable String name, @ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel ){
 
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()

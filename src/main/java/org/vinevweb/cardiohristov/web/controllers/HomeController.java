@@ -1,4 +1,4 @@
-package org.vinevweb.cardiohristov.controllers;
+package org.vinevweb.cardiohristov.web.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
-import org.vinevweb.cardiohristov.domain.entities.Testimonial;
 import org.vinevweb.cardiohristov.domain.models.binding.UserRegisterBindingModel;
 import org.vinevweb.cardiohristov.domain.models.view.AllArticlesViewModel;
 import org.vinevweb.cardiohristov.domain.models.view.AllProceduresProcedureViewModel;
@@ -14,11 +13,11 @@ import org.vinevweb.cardiohristov.domain.models.view.TestimonialViewModel;
 import org.vinevweb.cardiohristov.services.ArticleService;
 import org.vinevweb.cardiohristov.services.ProcedureService;
 import org.vinevweb.cardiohristov.services.TestimonialService;
+import org.vinevweb.cardiohristov.web.annotations.PageTitle;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -73,6 +72,7 @@ public class HomeController extends BaseController {
     }
 
     @GetMapping("/contactUs")
+    @PageTitle("Контакти")
     public ModelAndView contactUs(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         Map<String, Object> stringObjectMap = new HashMap<>();

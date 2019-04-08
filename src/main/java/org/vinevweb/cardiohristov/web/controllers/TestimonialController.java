@@ -1,4 +1,4 @@
-package org.vinevweb.cardiohristov.controllers;
+package org.vinevweb.cardiohristov.web.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +11,10 @@ import org.vinevweb.cardiohristov.domain.models.binding.UserRegisterBindingModel
 import org.vinevweb.cardiohristov.domain.models.service.TestimonialServiceModel;
 import org.vinevweb.cardiohristov.domain.models.view.AllProceduresProcedureViewModel;
 import org.vinevweb.cardiohristov.domain.models.view.TestimonialViewModel;
-import org.vinevweb.cardiohristov.errors.ProcedureCreateFailureException;
 import org.vinevweb.cardiohristov.errors.TestimonialCreateFailureException;
-import org.vinevweb.cardiohristov.services.CloudinaryService;
 import org.vinevweb.cardiohristov.services.ProcedureService;
 import org.vinevweb.cardiohristov.services.TestimonialService;
+import org.vinevweb.cardiohristov.web.annotations.PageTitle;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +38,7 @@ public class TestimonialController extends BaseController {
     }
 
     @GetMapping("/all")
+    @PageTitle("Отзиви")
     public ModelAndView index(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         Map<String, Object> stringObjectMap = new HashMap<>();
