@@ -98,5 +98,12 @@ public class ArticleServiceImpl implements ArticleService {
 
 
         this.articleRepository.deleteById(id);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User)authentication.getPrincipal();
+
+        this.logService.addEvent(new String[]{ LocalDateTime.now().toString(),
+                currentUser.getUsername(),
+                "Изтрита е статия със заглавие: " + article.getTitle()});
     }
 }
