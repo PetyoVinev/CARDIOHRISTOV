@@ -19,13 +19,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.vinevweb.cardiohristov.domain.entities.Article;
 import org.vinevweb.cardiohristov.domain.entities.Comment;
+import org.vinevweb.cardiohristov.domain.entities.Procedure;
 import org.vinevweb.cardiohristov.domain.entities.User;
 import org.vinevweb.cardiohristov.domain.models.service.ArticleServiceModel;
+import org.vinevweb.cardiohristov.domain.models.service.ProcedureServiceModel;
 import org.vinevweb.cardiohristov.repositories.ArticleRepository;
+import org.vinevweb.cardiohristov.repositories.ProcedureRepository;
 import org.vinevweb.cardiohristov.repositories.UserRepository;
 import org.vinevweb.cardiohristov.services.ArticleServiceImpl;
 import org.vinevweb.cardiohristov.services.CommentServiceImpl;
 import org.vinevweb.cardiohristov.services.LogServiceImpl;
+import org.vinevweb.cardiohristov.services.ProcedureServiceImpl;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -44,7 +48,7 @@ public class ProcedureServiceTests {
     private Comment fakeComment;
 
     @InjectMocks
-    private ArticleServiceImpl articleService;
+    private ProcedureServiceImpl procedureService;
 
     @Mock
     private LogServiceImpl logService;
@@ -53,7 +57,7 @@ public class ProcedureServiceTests {
     private UserRepository userRepository;
 
     @Mock
-    private ArticleRepository articleRepository;
+    private ProcedureRepository procedureRepository;
 
     @Mock
     private CommentServiceImpl commentService;
@@ -67,7 +71,7 @@ public class ProcedureServiceTests {
     }
 
     @Test
-    public void createArticleCreatesItInDbAndCreateLog() {
+    public void createProcedureCreatesItInDbAndCreateLog() {
 
         User user = new User();
         user.setUsername("boko@abv.bg");
@@ -78,98 +82,88 @@ public class ProcedureServiceTests {
         SecurityContextHolder.setContext(secCont);
         Mockito.when(auth.getPrincipal()).thenReturn(user);
 
-        ArticleServiceModel articleServiceModel = new ArticleServiceModel();
+        ProcedureServiceModel procedureServiceModel = new ProcedureServiceModel();
 
-        Article article = new Article();
-        article.setTitle("Article Title");
+        Procedure procedure = new Procedure();
+        procedure.setName("Procedure Title");
 
-        Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(article);
-        Mockito.when(this.userRepository.findById(Mockito.any())).thenReturn(Optional.of(user));
+        Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(procedure);
 
-        this.articleService.createArticle(articleServiceModel);
+        this.procedureService.createProcedure(procedureServiceModel);
 
-        verify(articleRepository)
-                .save(article);
+        verify(procedureRepository)
+                .save(procedure);
         verify(logService)
                 .addEvent(any());
 
     }
 
     @Test
-    public void findAllByOrderByWrittenOnDescInvokeRepository() {
-        this.articleService.findAllByOrderByWrittenOnDesc();
-        verify(articleRepository)
-                .findAllByOrderByWrittenOnDesc();
+    public void getAllByDateAscInvokeRepository() {
+        this.procedureService.getAllByDateAsc();
+        verify(procedureRepository)
+                .findAllByOrderByDateAsc();
 
     }
 
     @Test
     public void findByIdReturnsCorrectEntity() {
-        ArticleServiceModel articleServiceModel = new ArticleServiceModel();
-        articleServiceModel.setId("1234");
-        Article article = new Article();
-        article.setId("1234");
+        ProcedureServiceModel procedureServiceModel = new ProcedureServiceModel();
+        procedureServiceModel.setId("1234");
+        Procedure procedure = new Procedure();
+        procedure.setId("1234");
 
-        Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(articleServiceModel);
-        Mockito.when(this.articleRepository.findById(Mockito.any())).thenReturn(Optional.of(article));
-        String result = articleService.findById("1234").getId();
+        Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(procedureServiceModel);
+        Mockito.when(this.procedureRepository.findById(Mockito.any())).thenReturn(Optional.of(procedure));
+        String result = procedureService.findById("1234").getId();
         Assert.assertEquals("1234", result);
 
     }
 
     @Test(expected = NullPointerException.class)
     public void findByInvalidIdThrowsException() {
-            articleService.findById("asd");
-            verify(articleRepository)
+            procedureService.findById("asd");
+            verify(procedureRepository)
                     .findById("asd");
         }
 
 
     @Test
-    public void findByTitleReturnsCorrectEntity() {
-        ArticleServiceModel articleServiceModel = new ArticleServiceModel();
-        articleServiceModel.setTitle("Title");
-        Article article = new Article();
-        article.setTitle("Title");
+    public void findByNameReturnsCorrectEntity() {
+        ProcedureServiceModel procedureServiceModel = new ProcedureServiceModel();
+        procedureServiceModel.setName("Name");
+        Procedure procedure = new Procedure();
+        procedure.setName("Name");
 
-        Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(articleServiceModel);
-        Mockito.when(this.articleRepository.findByTitle(Mockito.any())).thenReturn(article);
-        String result = articleService.findByTitle("1234").getTitle();
-        Assert.assertEquals("Title", result);
+        Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(procedureServiceModel);
+        Mockito.when(this.procedureRepository.findByName(Mockito.any())).thenReturn(procedure);
+        String result = procedureService.findByName("Name").getName();
+        Assert.assertEquals("Name", result);
 
     }
 
     @Test
     public void deleteArticleRemovesItFromDBAndCreatesLog() {
 
-        Article article = new Article();
-        article.setTitle("Title");
-        article.setComments(new HashSet<>());
-        Comment comment1 = new Comment();
-        Comment comment2 = new Comment();
-        article.getComments().add(comment1);
-        article.getComments().add(comment2);
+        Procedure procedure = new Procedure();
+        procedure.setId("1234");
+        procedure.setName("Name");
 
-        Mockito.when(this.articleRepository.findById(Mockito.any())).thenReturn(Optional.of(article));
+        Mockito.when(this.procedureRepository.getOne(Mockito.any())).thenReturn(procedure);
 
+        User user = new User();
+        user.setUsername("boko@abv.bg");
         Authentication auth = Mockito.mock(Authentication.class);
         SecurityContext secCont = Mockito.mock(SecurityContext.class);
         Mockito.when(secCont.getAuthentication()).thenReturn(auth);
         SecurityContextHolder.setContext(secCont);
-        Mockito.when(auth.getPrincipal()).thenReturn(new User());
+        Mockito.when(auth.getPrincipal()).thenReturn(user);
 
-        this.articleService.deleteArticle("1234");
+        this.procedureService.deleteProcedure("1234");
 
-        verify(articleRepository, times(2))
-                .saveAndFlush(article);
-
-        verify(commentService)
-                .removeCommentFromUserAndDelete(comment1);
-        verify(commentService)
-                .removeCommentFromUserAndDelete(comment2);
-
-        verify(articleRepository)
+        verify(procedureRepository)
                 .deleteById("1234");
+
         verify(logService)
                 .addEvent(any());
 
