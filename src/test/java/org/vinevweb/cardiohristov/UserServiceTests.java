@@ -19,17 +19,26 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.vinevweb.cardiohristov.domain.entities.Comment;
 import org.vinevweb.cardiohristov.domain.entities.User;
 import org.vinevweb.cardiohristov.domain.models.service.UserServiceModel;
 import org.vinevweb.cardiohristov.errors.IdNotFoundException;
 import org.vinevweb.cardiohristov.repositories.UserRepository;
 import org.vinevweb.cardiohristov.repositories.UserRoleRepository;
+import org.vinevweb.cardiohristov.services.CommentServiceImpl;
 import org.vinevweb.cardiohristov.services.LogService;
 import org.vinevweb.cardiohristov.services.user.UserServiceImpl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,7 +56,10 @@ public class UserServiceTests {
     private UserRepository userRepository;
 
     @Mock
-    private UserRoleRepository roleRepository;
+    private UserRoleRepository userRoleRepository;
+
+    @Mock
+    private CommentServiceImpl commentService;
 
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -179,4 +191,70 @@ public class UserServiceTests {
 
         Assert.assertTrue(result);
     }
+
+    @Test
+    public void deleteUserRemovesItFromDBAndCreatesLog() {
+
+        User user  = new User();
+        user.setUsername("boko@abv.bg");
+        user.setComments(new HashSet<>());
+        Comment comment1 = new Comment();
+        Comment comment2 = new Comment();
+        user.getComments().add(comment1);
+        user.getComments().add(comment2);
+
+        UserServiceModel userServiceModel = new UserServiceModel();
+        userServiceModel.setId("1234");
+
+        Mockito.when(this.userRepository.findById(Mockito.any())).thenReturn(Optional.of(user));
+
+        Authentication auth = Mockito.mock(Authentication.class);
+        SecurityContext secCont = Mockito.mock(SecurityContext.class);
+        Mockito.when(secCont.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(secCont);
+        Mockito.when(auth.getPrincipal()).thenReturn(new User());
+
+        this.userService.deleteProfile(userServiceModel);
+
+        verify(userRepository, times(2))
+                .saveAndFlush(user);
+
+        verify(commentService)
+                .removeCommentFromArticleAndDelete(comment1);
+        verify(commentService)
+                .removeCommentFromArticleAndDelete(comment2);
+
+        verify(userRepository)
+                .deleteById("1234");
+        verify(logService)
+                .addEvent(any());
+
+
+
+    }
+    @Test
+    public void extractAllUsersOrderedAlphabeticallyWorksCorrectly() {
+
+
+        List<User> users = new ArrayList<>();
+        users.add(this.fakeUser);
+
+        Mockito.when(this.userRepository.findAllByOrderByUsernameAsc()).thenReturn(users);
+        when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(new UserServiceModel());
+
+
+        List<UserServiceModel> result = this.userService.extractAllUsersOrderedAlphabetically();
+
+        verify(userRepository).findAllByOrderByUsernameAsc();
+
+        assertEquals(users.stream()
+                .map(u -> {
+                    UserServiceModel userServiceModel = this.modelMapper.map(u, UserServiceModel.class);
+                    userServiceModel.setEmail(u.getUsername());
+
+                    return userServiceModel;
+                }).collect(Collectors.toList()), result);
+
+    }
+
 }
