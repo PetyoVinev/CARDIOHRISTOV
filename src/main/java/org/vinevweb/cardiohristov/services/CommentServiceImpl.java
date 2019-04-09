@@ -57,8 +57,8 @@ public class CommentServiceImpl implements CommentService {
         user.getComments().remove(comment);
         userRepository.saveAndFlush(user);
         commentRepository.delete(comment);
-
     }
+
     @Override
     public void removeCommentFromArticleAndDelete(Comment comment) {
         Article article = this.articleRepository.findById(comment.getArticle().getId()).orElse(null);

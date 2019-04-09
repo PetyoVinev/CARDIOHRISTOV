@@ -36,7 +36,7 @@ public class LogServiceImpl implements LogService {
 
     @Override
     @Async
-    public void addEvent(String[] eventParams) {
+    public boolean addEvent(String[] eventParams) {
 
       /*  //check async
         try {
@@ -47,6 +47,7 @@ public class LogServiceImpl implements LogService {
 */
         Log logEntity = this.prepareLogEntity(eventParams);
         this.logRepository.save(logEntity);
+        return true;
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface LogService {
 
-    void addEvent(String[] eventParams);
+    boolean addEvent(String[] eventParams);
 
     List<LogServiceModel> getLogsOrderedByDate();
 }

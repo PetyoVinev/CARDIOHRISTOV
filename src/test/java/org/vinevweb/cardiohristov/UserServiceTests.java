@@ -11,6 +11,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,9 +24,13 @@ import org.vinevweb.cardiohristov.domain.models.service.UserServiceModel;
 import org.vinevweb.cardiohristov.errors.IdNotFoundException;
 import org.vinevweb.cardiohristov.repositories.UserRepository;
 import org.vinevweb.cardiohristov.repositories.UserRoleRepository;
+import org.vinevweb.cardiohristov.services.LogService;
 import org.vinevweb.cardiohristov.services.user.UserServiceImpl;
 
+import java.util.HashSet;
 import java.util.Optional;
+
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
@@ -47,20 +55,27 @@ public class UserServiceTests {
     @Mock
     private ModelMapper modelMapper;
 
+    @MockBean
+    private Authentication authentication;
+
+    @Mock
+    private LogService logService;
+
     @Before
     public void createFakeUser() {
-        Mockito.when(this.bCryptPasswordEncoder.encode(Mockito.anyString())).thenReturn("fakeHash");
+        when(this.bCryptPasswordEncoder.encode(Mockito.anyString())).thenReturn("fakeHash");
         this.fakeUser = new User();
         fakeUser.setId("0c39a7b4-b039-4d78-a0f8-333be7b0e718");
         fakeUser.setFirstName("Fake");
         fakeUser.setLastName("Fakes");
         fakeUser.setUsername("fake@fake.bg");
         fakeUser.setPassword(this.bCryptPasswordEncoder.encode("1111"));
+        fakeUser.setAuthorities(new HashSet<>());
     }
 
     @Test
     public void loadUserByUsernameShouldReturnUserDetails() {
-        Mockito.when(this.userRepository.findByUsername(Mockito.any())).thenReturn(Optional.of(this.fakeUser));
+        when(this.userRepository.findByUsername(Mockito.any())).thenReturn(Optional.of(this.fakeUser));
 
         UserDetails userDetails = this.userService.loadUserByUsername(this.fakeUser.getUsername());
 
@@ -73,8 +88,8 @@ public class UserServiceTests {
     public void extractUserByEmailShouldReturnUser() {
         ModelMapper modelMapper = new ModelMapper();
 
-        Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(modelMapper.map(this.fakeUser, UserServiceModel.class));
-        Mockito.when(this.userRepository.findByUsername(Mockito.any())).thenReturn(Optional.of(this.fakeUser));
+        when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(modelMapper.map(this.fakeUser, UserServiceModel.class));
+        when(this.userRepository.findByUsername(Mockito.any())).thenReturn(Optional.of(this.fakeUser));
 
         UserServiceModel userServiceModel = this.userService.extractUserByEmail("fake@fake.bg");
 
@@ -96,8 +111,8 @@ public class UserServiceTests {
         UserServiceModel userServiceModel = modelMapper.map(this.fakeUser, UserServiceModel.class);
         userServiceModel.setEmail(this.fakeUser.getUsername());
 
-        Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(this.fakeUser);
-        Mockito.when(this.userRepository.save(this.fakeUser)).thenReturn(this.fakeUser);
+        when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(this.fakeUser);
+        when(this.userRepository.save(this.fakeUser)).thenReturn(this.fakeUser);
 
         boolean result = this.userService.registerUser(userServiceModel);
 
@@ -107,8 +122,8 @@ public class UserServiceTests {
     @Test
     public void extractUserByIdShouldReturnUser() {
         ModelMapper modelMapper = new ModelMapper();
-        Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(modelMapper.map(this.fakeUser, UserServiceModel.class));
-        Mockito.when(this.userRepository.findById(Mockito.any())).thenReturn(Optional.of(this.fakeUser));
+        when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(modelMapper.map(this.fakeUser, UserServiceModel.class));
+        when(this.userRepository.findById(Mockito.any())).thenReturn(Optional.of(this.fakeUser));
 
         UserServiceModel userServiceModel = this.userService.extractUserById("0c39a7b4-b039-4d78-a0f8-333be7b0e718");
 
@@ -128,7 +143,7 @@ public class UserServiceTests {
         ModelMapper modelMapper = new ModelMapper();
         UserServiceModel userServiceModel = modelMapper.map(this.fakeUser, UserServiceModel.class);
 
-        Mockito.when(this.userRepository.findByUsername(Mockito.anyString())).thenReturn(Optional.of(this.fakeUser));
+        when(this.userRepository.findByUsername(Mockito.anyString())).thenReturn(Optional.of(this.fakeUser));
         userServiceModel.setEmail(this.fakeUser.getUsername());
 
         boolean result = this.userService.editUser(userServiceModel);
@@ -148,12 +163,20 @@ public class UserServiceTests {
     public void editUserRoleShouldReturnTrue() {
         ModelMapper modelMapper = new ModelMapper();
         UserServiceModel userServiceModel = modelMapper.map(this.fakeUser, UserServiceModel.class);
-        Mockito.when(this.userRepository.findByUsername(Mockito.anyString())).thenReturn(Optional.of(this.fakeUser));
+        when(this.userRepository.findByUsername(Mockito.anyString())).thenReturn(Optional.of(this.fakeUser));
 
         userServiceModel.setEmail(this.fakeUser.getUsername());
 
-        boolean result = this.userService.editUserRole(userServiceModel.getEmail(), "fakeRole");
+        Authentication auth = Mockito.mock(Authentication.class);
+        SecurityContext secCont = Mockito.mock(SecurityContext.class);
+        Mockito.when(secCont.getAuthentication()).thenReturn(auth);
+        SecurityContextHolder.setContext(secCont);
+        when(auth.getPrincipal()).thenReturn(this.fakeUser);
 
-        Assert.assertTrue("", result);
+        when(logService.addEvent(Mockito.any())).thenReturn(true);
+
+        boolean result = this.userService.editUserRole(userServiceModel.getEmail(), "moderator");
+
+        Assert.assertTrue(result);
     }
 }
