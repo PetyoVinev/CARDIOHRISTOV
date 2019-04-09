@@ -99,7 +99,6 @@ public class ArticleServiceImpl implements ArticleService {
             commentService.removeCommentFromUserAndDelete(comment);
         }
 
-
         this.articleRepository.deleteById(id);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
