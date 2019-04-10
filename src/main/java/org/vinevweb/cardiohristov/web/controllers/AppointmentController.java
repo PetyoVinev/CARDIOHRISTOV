@@ -81,6 +81,7 @@ public class AppointmentController extends BaseController {
                                                  @ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel,
                                                  BindingResult bindingResult) {
 
+
         if (bindingResult.hasErrors()) {
             throw new AppointmentCreateFailureException(APPOINTMENT_CREATE_FAILURE_EXCEPTION);
         }
@@ -96,7 +97,8 @@ public class AppointmentController extends BaseController {
         if (id == null) {
             return super.view("appointment-failed", "appointment", appointmentCreateBindingModel);
         }
-        AppointmentCreatedViewModel appointmentCreatedViewModel = modelMapper.map(appointmentCreateBindingModel , AppointmentCreatedViewModel.class);
+        AppointmentCreatedViewModel appointmentCreatedViewModel = modelMapper.map(appointmentCreateBindingModel ,
+                AppointmentCreatedViewModel.class);
         appointmentCreatedViewModel.setId(id);
 
         return super.view("appointment-created", "appointment", appointmentCreatedViewModel);
