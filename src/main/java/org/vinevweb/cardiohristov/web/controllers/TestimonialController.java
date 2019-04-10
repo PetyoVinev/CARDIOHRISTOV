@@ -42,7 +42,7 @@ public class TestimonialController extends BaseController {
 
     @GetMapping("/all")
     @PageTitle(TITLE_TESTIMONIALS)
-    public ModelAndView index(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
+    public ModelAndView getAll(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         Map<String, Object> stringObjectMap = new HashMap<>();
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()
@@ -65,7 +65,7 @@ public class TestimonialController extends BaseController {
 
     @PostMapping("/create")
     @PreAuthorize("isAuthenticated()")
-    public ModelAndView createProcedureConfirm(@ModelAttribute TestimonialCreateBindingModel testimonialCreateBindingModel) {
+    public ModelAndView createTestimonialConfirm(@ModelAttribute TestimonialCreateBindingModel testimonialCreateBindingModel) {
 
         TestimonialServiceModel testimonialServiceModel = modelMapper.map(testimonialCreateBindingModel, TestimonialServiceModel.class);
 
@@ -81,7 +81,7 @@ public class TestimonialController extends BaseController {
 
     @PostMapping("/delete")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ModelAndView deleteProfile(@RequestParam("id") String id) {
+    public ModelAndView deleteTestimonial(@RequestParam("id") String id) {
         this.testimonialService
                 .deleteTestimonial(id);
         return super.redirect("/testimonials/all");

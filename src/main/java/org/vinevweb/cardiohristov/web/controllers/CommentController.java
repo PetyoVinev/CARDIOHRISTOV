@@ -37,7 +37,7 @@ public class CommentController extends BaseController {
 
     @PostMapping("/create")
     @PreAuthorize("isAuthenticated()")
-    public ModelAndView createArticleConfirm(@ModelAttribute CreateCommentBindingModel createCommentBindingModel) throws UnsupportedEncodingException {
+    public ModelAndView createCommentConfirm(@ModelAttribute CreateCommentBindingModel createCommentBindingModel) throws UnsupportedEncodingException {
         CommentServiceModel commentServiceModel = this.modelMapper
                 .map(createCommentBindingModel, CommentServiceModel.class);
 

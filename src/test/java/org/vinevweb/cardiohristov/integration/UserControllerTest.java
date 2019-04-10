@@ -9,6 +9,7 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.vinevweb.cardiohristov.repositories.UserRepository;
@@ -29,20 +30,13 @@ public class UserControllerTest {
     private UserRepository userRepository;
 
     @Before
-    public void emptyDB() {
+    public void emptyDB() throws Exception {
         this.userRepository.deleteAll();
     }
 
 
     @Test
-    public void register_returnCorrectView() throws Exception {
-        this.mvc
-                .perform(get("/register").with(csrf()))
-                .andExpect(view().name("redirect:/"));
-    }
-
-    @Test
-    public void register_confirmRegister() throws Exception {
+    public void validPostOnRegister_InsertsUserInDB() throws Exception {
         this.mvc
                 .perform(post("/register")
                         .with(csrf())
@@ -55,8 +49,17 @@ public class UserControllerTest {
         Assert.assertEquals(1, this.userRepository.count());
     }
 
+
     @Test
-    public void register_returnRedirectCorrect() throws Exception {
+    @WithMockUser
+    public void getRegister_returnRedirectCorrect() throws Exception {
+        this.mvc
+                .perform(get("/register").with(csrf()))
+                .andExpect(view().name("redirect:/"));
+    }
+
+    @Test
+    public void validPostOnRegister_returnView() throws Exception {
         this.mvc
                 .perform(post("/register")
                         .with(csrf())
@@ -65,6 +68,8 @@ public class UserControllerTest {
                         .param("confirmPassword", "1234")
                         .param("firstName", "Pesho")
                         .param("lastName", "Peshov"))
+
                 .andExpect(view().name("fragments/base-layout"));
     }
+
 }

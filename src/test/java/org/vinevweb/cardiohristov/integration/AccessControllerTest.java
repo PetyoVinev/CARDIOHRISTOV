@@ -16,20 +16,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class HomeControllerTest {
+public class AccessControllerTest {
     @Autowired
     private MockMvc mvc;
 
-
-    @Test
-    public void index_returnCorrectMvc() throws Exception {
-        this.mvc.perform(get("/"))
-                .andExpect(view().name("fragments/base-layout"));
-    }
     @Test
     @WithMockUser
-    public void contactUs_returnCorrectMvc() throws Exception {
-        this.mvc.perform(get("/contactUs"))
+    public void unauthorized_returnCorrectMvc() throws Exception {
+        this.mvc.perform(get("/unauthorized"))
                 .andExpect(view().name("fragments/base-layout"));
     }
+
 }
