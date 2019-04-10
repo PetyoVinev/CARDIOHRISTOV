@@ -1,7 +1,6 @@
 package org.vinevweb.cardiohristov;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -10,37 +9,20 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
-import org.vinevweb.cardiohristov.domain.entities.Article;
-import org.vinevweb.cardiohristov.domain.entities.Comment;
 import org.vinevweb.cardiohristov.domain.entities.Log;
-import org.vinevweb.cardiohristov.domain.entities.User;
-import org.vinevweb.cardiohristov.domain.models.service.ArticleServiceModel;
 import org.vinevweb.cardiohristov.domain.models.service.LogServiceModel;
-import org.vinevweb.cardiohristov.repositories.ArticleRepository;
 import org.vinevweb.cardiohristov.repositories.LogRepository;
-import org.vinevweb.cardiohristov.repositories.UserRepository;
-import org.vinevweb.cardiohristov.services.ArticleServiceImpl;
-import org.vinevweb.cardiohristov.services.CommentServiceImpl;
 import org.vinevweb.cardiohristov.services.LogServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -54,7 +36,6 @@ public class LogServiceTests {
 
     @Mock
     private LogRepository logRepository;
-
 
     @Mock
     private ModelMapper modelMapper;

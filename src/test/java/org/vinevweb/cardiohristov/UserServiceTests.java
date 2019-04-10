@@ -11,7 +11,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -66,9 +65,6 @@ public class UserServiceTests {
 
     @Mock
     private ModelMapper modelMapper;
-
-    @MockBean
-    private Authentication authentication;
 
     @Mock
     private LogService logService;

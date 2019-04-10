@@ -1,7 +1,6 @@
 package org.vinevweb.cardiohristov;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -9,28 +8,22 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.vinevweb.cardiohristov.domain.entities.Article;
 import org.vinevweb.cardiohristov.domain.entities.Comment;
 import org.vinevweb.cardiohristov.domain.entities.User;
 import org.vinevweb.cardiohristov.domain.models.service.ArticleServiceModel;
-import org.vinevweb.cardiohristov.domain.models.service.CommentServiceModel;
 import org.vinevweb.cardiohristov.repositories.ArticleRepository;
-import org.vinevweb.cardiohristov.repositories.CommentRepository;
 import org.vinevweb.cardiohristov.repositories.UserRepository;
 import org.vinevweb.cardiohristov.services.ArticleServiceImpl;
 import org.vinevweb.cardiohristov.services.CommentServiceImpl;
 import org.vinevweb.cardiohristov.services.LogServiceImpl;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
 
@@ -42,10 +35,7 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest
 @DataJpaTest
 @ActiveProfiles("test")
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class ArticleServiceTests {
-
-    private Comment fakeComment;
 
     @InjectMocks
     private ArticleServiceImpl articleService;
@@ -65,10 +55,6 @@ public class ArticleServiceTests {
     @Mock
     private ModelMapper modelMapper;
 
-    @Before
-    public void create() {
-
-    }
 
     @Test
     public void createArticleCreatesItInDbAndCreateLog() {

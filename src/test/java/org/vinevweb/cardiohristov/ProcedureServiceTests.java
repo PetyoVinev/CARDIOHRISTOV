@@ -1,7 +1,7 @@
 package org.vinevweb.cardiohristov;
 
 import org.junit.Assert;
-import org.junit.Before;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -9,25 +9,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
-import org.vinevweb.cardiohristov.domain.entities.Article;
-import org.vinevweb.cardiohristov.domain.entities.Comment;
 import org.vinevweb.cardiohristov.domain.entities.Procedure;
 import org.vinevweb.cardiohristov.domain.entities.User;
-import org.vinevweb.cardiohristov.domain.models.service.ArticleServiceModel;
 import org.vinevweb.cardiohristov.domain.models.service.ProcedureServiceModel;
-import org.vinevweb.cardiohristov.repositories.ArticleRepository;
 import org.vinevweb.cardiohristov.repositories.ProcedureRepository;
-import org.vinevweb.cardiohristov.repositories.UserRepository;
-import org.vinevweb.cardiohristov.services.ArticleServiceImpl;
-import org.vinevweb.cardiohristov.services.CommentServiceImpl;
 import org.vinevweb.cardiohristov.services.LogServiceImpl;
 import org.vinevweb.cardiohristov.services.ProcedureServiceImpl;
 
@@ -42,10 +33,8 @@ import static org.mockito.Mockito.verify;
 @SpringBootTest
 @DataJpaTest
 @ActiveProfiles("test")
-@AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class ProcedureServiceTests {
 
-    private Comment fakeComment;
 
     @InjectMocks
     private ProcedureServiceImpl procedureService;
@@ -54,21 +43,11 @@ public class ProcedureServiceTests {
     private LogServiceImpl logService;
 
     @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private ProcedureRepository procedureRepository;
-
-    @Mock
-    private CommentServiceImpl commentService;
 
     @Mock
     private ModelMapper modelMapper;
 
-    @Before
-    public void create() {
-
-    }
 
     @Test
     public void createProcedureCreatesItInDbAndCreateLog() {
