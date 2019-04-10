@@ -35,22 +35,18 @@ public class UserController extends BaseController {
     @PreAuthorize("isAnonymous()")
     public ModelAndView registerConfirm(@Valid @ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel,
                                         BindingResult bindingResult) {
-
         if (!userRegisterBindingModel.getPasswordRegister().equals(userRegisterBindingModel.getConfirmPassword())) {
             bindingResult.addError(new FieldError("userRegisterBindingModel", "passwordRegister",
                     PASSWORDS_DID_NOT_MATCH));
         }
-
         if (bindingResult.hasErrors()) {
             return super.view("index", "userRegisterBindingModel", userRegisterBindingModel);
         }
-
         UserServiceModel userServiceModel = this.modelMapper.map(userRegisterBindingModel, UserServiceModel.class);
 
         if (!this.userService.registerUser(userServiceModel)) {
             throw new UserRegisterFailureException(String.format(USER_REGISTRATION_FAILURE, userServiceModel.getEmail()));
         }
-
 
         return super.view("index", "userRegisterBindingModel", userRegisterBindingModel);
     }

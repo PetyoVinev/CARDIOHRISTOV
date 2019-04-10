@@ -1,4 +1,4 @@
-package org.vinevweb.cardiohristov;
+package org.vinevweb.cardiohristov.unit;
 
 import org.junit.Assert;
 
