@@ -184,7 +184,6 @@ public class UserServiceTests {
         SecurityContextHolder.setContext(secCont);
         when(auth.getPrincipal()).thenReturn(this.fakeUser);
 
-        when(logService.addEvent(Mockito.any())).thenReturn(true);
 
         boolean result = this.userService.editUserRole(userServiceModel.getEmail(), MODERATOR);
 

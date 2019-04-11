@@ -53,15 +53,14 @@ public class LogServiceTests {
 
         String[] eventParams = new String[]{DATETIME, USERNAME, ARTICLE_CREATE_MSG};
 
-        boolean result = this.logService.addEvent(eventParams);
+        this.logService.addEvent(eventParams);
 
         ArgumentCaptor<Log> argument = ArgumentCaptor.forClass(Log.class);
         verify(logRepository).save(argument.capture());
         assertEquals(USERNAME, argument.getValue().getUser());
         assertEquals(LocalDateTime.parse(DATETIME_EXPECTED), argument.getValue().getDateTime());
         assertEquals(ARTICLE_CREATE_MSG, argument.getValue().getEvent());
-
-        Assert.assertTrue(result);
+        
 
     }
 
