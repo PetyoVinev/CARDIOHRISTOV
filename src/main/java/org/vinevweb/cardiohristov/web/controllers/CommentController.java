@@ -23,7 +23,6 @@ import static org.vinevweb.cardiohristov.common.Constants.COMMENT_CREATION_ERROR
 public class CommentController extends BaseController {
 
     private final ModelMapper modelMapper;
-
     private final CommentService commentService;
     private final ArticleService articleService;
 
@@ -40,7 +39,6 @@ public class CommentController extends BaseController {
     public ModelAndView createCommentConfirm(@ModelAttribute CreateCommentBindingModel createCommentBindingModel) throws UnsupportedEncodingException {
         CommentServiceModel commentServiceModel = this.modelMapper
                 .map(createCommentBindingModel, CommentServiceModel.class);
-
 
         boolean result = commentService.createComment(commentServiceModel);
         if (!result) {

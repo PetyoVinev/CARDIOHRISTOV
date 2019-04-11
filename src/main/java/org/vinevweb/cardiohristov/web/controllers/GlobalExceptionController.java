@@ -10,8 +10,6 @@ import static org.vinevweb.cardiohristov.common.Constants.SOMETHING_WENT_WRONG;
 @ControllerAdvice
 public class GlobalExceptionController extends BaseController {
 
-
-
     @ExceptionHandler(RuntimeException.class)
     public ModelAndView getException(RuntimeException re) {
 

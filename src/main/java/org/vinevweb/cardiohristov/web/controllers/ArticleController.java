@@ -85,7 +85,7 @@ public class ArticleController extends BaseController {
         /*String pictureUrl = this.cloudinaryService.uploadImage(articleCreateBindingModel.getArticlePicture());*/
         String pictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq6jS89uE7QegpxXMefUXPFEY04QFVAir55Fu7RN3rBe81YbFuCQ";
         if (pictureUrl == null) {
-            throw new ArticleCreateFailureException("Article Picture upload failed.");
+            throw new ArticleCreateFailureException(ARTICLE_PICTURE_UPLOAD_FAILED);
         }
 
         articleServiceModel.setPictureUrl(pictureUrl);
@@ -94,7 +94,7 @@ public class ArticleController extends BaseController {
                 .createArticle(articleServiceModel);
 
         if (!result) {
-            throw new ArticleCreateFailureException("Article creation failed.");
+            throw new ArticleCreateFailureException(ARTICLE_CREATION_FAILED);
         }
 
         return this.redirect("/articles/all");

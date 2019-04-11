@@ -36,7 +36,6 @@ public class TestimonialController extends BaseController {
     public TestimonialController(ModelMapper modelMapper, TestimonialService testimonialService, ProcedureService procedureService) {
         this.modelMapper = modelMapper;
         this.testimonialService = testimonialService;
-
         this.procedureService = procedureService;
     }
 

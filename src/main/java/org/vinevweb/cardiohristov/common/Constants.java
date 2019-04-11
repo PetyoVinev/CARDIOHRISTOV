@@ -91,6 +91,8 @@ public final class Constants {
         //APPOINTMENT
     public static final String APPOINTMENT_CREATE_FAILURE_EXCEPTION = "Invalid data for creating appointment!";
     public static final String TITLE_SCHEDULE = "График";
+    public static final String ARTICLE_PICTURE_UPLOAD_FAILED = "Article Picture upload failed.";
+    public static final String ARTICLE_CREATION_FAILED = "Article creation failed.";
         //ARTICLE
         public static final String TITLE_ARTICLES = "Статии";
     public static final String TITLE_ARTICLES_CREATE = "Статии - Създаване";

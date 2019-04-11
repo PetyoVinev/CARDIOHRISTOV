@@ -12,6 +12,7 @@ import java.util.HashMap;
 @Service
 public class CloudinaryServiceImpl implements CloudinaryService {
     private static final String TEMP_FILE_PREFIX = "temp-file";
+    private static final String URL = "url";
     private final Cloudinary cloudinary;
 
     @Autowired
@@ -27,7 +28,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
         return this.cloudinary
                 .uploader()
                 .upload(fileToUpload, new HashMap())
-                .get("url")
+                .get(URL)
                 .toString();
     }
 

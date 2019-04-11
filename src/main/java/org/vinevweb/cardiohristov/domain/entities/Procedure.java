@@ -1,10 +1,7 @@
 package org.vinevweb.cardiohristov.domain.entities;
 
 
-import org.vinevweb.cardiohristov.config.LocalDateTimeAttributeConverter;
-
 import javax.persistence.Column;
-import javax.persistence.Converter;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
