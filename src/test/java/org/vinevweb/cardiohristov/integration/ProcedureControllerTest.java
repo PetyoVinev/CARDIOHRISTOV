@@ -30,12 +30,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
+import static org.vinevweb.cardiohristov.Constants.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class ProcedureControllerTest {
+    private static final String PROCEDURES_ALL = "/procedures/all";
+    private static final String PROCEDURES_CREATE = "/procedures/create";
+    private static final String REDIRECT_PROCEDURES_ALL = "redirect:/procedures/all";
+    private static final String PROCEDURES_DELETE = "/procedures/delete";
+    private static final String PROCEDURE_ID = "1234";
+    private static final String NAME = "name";
+    private static final String URL = "url";
+    private static final String CONTENT = "content";
+    private static final String PROCEDURES_DETAIL_NAME = "/procedures/detail/{name}";
+    private static final String PROCEDURE_ATTRIBUTE_NAME = "procedure";
+
     @Autowired
     private MockMvc mvc;
 
@@ -55,16 +66,16 @@ public class ProcedureControllerTest {
     @WithMockUser
     public void getAll_returnsCorrectView() throws Exception {
         this.mvc
-                .perform(get("/procedures/all").with(csrf()))
-                .andExpect(view().name("fragments/base-layout"));
+                .perform(get(PROCEDURES_ALL).with(csrf()))
+                .andExpect(view().name(FRAGMENTS_BASE_LAYOUT_ROUTE));
     }
 
     @Test
     @WithMockUser
     public void getAll_returnsPassCorrectAttribute() throws Exception {
         this.mvc
-                .perform(get("/procedures/all").with(csrf()))
-                .andExpect(model().attributeExists("procedures"));
+                .perform(get(PROCEDURES_ALL).with(csrf()))
+                .andExpect(model().attributeExists(PROCEDURES_ATTRIBUTE_NAME));
     }
 
     @Test
@@ -72,9 +83,9 @@ public class ProcedureControllerTest {
     public void validGetOnCreate_RedirectsToCreateArticlePage() throws Exception {
 
         this.mvc
-                .perform(get("/procedures/create")
+                .perform(get(PROCEDURES_CREATE)
                         .with(csrf()))
-                .andExpect(view().name("fragments/base-layout"));
+                .andExpect(view().name(FRAGMENTS_BASE_LAYOUT_ROUTE));
 
     }
     @Test
@@ -83,19 +94,19 @@ public class ProcedureControllerTest {
 
         when(procedureService.createProcedure(any())).thenReturn(true);
         this.mvc
-                .perform(post("/procedures/create")
+                .perform(post(PROCEDURES_CREATE)
                         .with(csrf()))
-                .andExpect(view().name("redirect:/procedures/all"));
+                .andExpect(view().name(REDIRECT_PROCEDURES_ALL));
     }
 
     @Test
     @WithMockUser
     public void validPostOnDeleteWithUser_RedirectsToUnauthorized() throws Exception {
         this.mvc
-                .perform(post("/procedures/delete")
+                .perform(post(PROCEDURES_DELETE)
                         .with(csrf())
-                        .param("id", "1234"))
-                .andExpect(view().name("/error/unauthorized"));
+                        .param("id", PROCEDURE_ID))
+                .andExpect(view().name(ERROR_UNAUTHORIZED));
 
     }
 
@@ -103,10 +114,10 @@ public class ProcedureControllerTest {
     @WithMockUser(roles={"MODERATOR"})
     public void validPostOnDeleteWithModerator_RedirectsToAll() throws Exception {
         this.mvc
-                .perform(post("/procedures/delete")
+                .perform(post(PROCEDURES_DELETE)
                         .with(csrf())
-                        .param("id", "1234"))
-                .andExpect(view().name("redirect:/procedures/all"));
+                        .param("id", PROCEDURE_ID))
+                .andExpect(view().name(REDIRECT_PROCEDURES_ALL));
 
 
 
@@ -116,21 +127,21 @@ public class ProcedureControllerTest {
     @WithMockUser(roles = {"ADMIN"})
     public void getDetail_ReturnsCorrectViewModel() throws Exception {
         ProcedureServiceModel procedureServiceModel = new ProcedureServiceModel();
-        procedureServiceModel.setName("name");
-        procedureServiceModel.setPictureUrl("url");
-        procedureServiceModel.setContent("content");
+        procedureServiceModel.setName(NAME);
+        procedureServiceModel.setPictureUrl(URL);
+        procedureServiceModel.setContent(CONTENT);
         procedureServiceModel.setDate(LocalDateTime.now());
 
         when(procedureService.findByName("name")).thenReturn(procedureServiceModel);
 
         this.mvc
-                .perform(get("/procedures/detail/{name}", "name", "name")
-                        .param("name", "name"))
-                .andExpect(view().name("fragments/base-layout"))
-                .andExpect(model().attributeExists("procedures",  "procedure"));
+                .perform(get(PROCEDURES_DETAIL_NAME, NAME, NAME)
+                        .param(NAME, NAME))
+                .andExpect(view().name(FRAGMENTS_BASE_LAYOUT_ROUTE))
+                .andExpect(model().attributeExists(PROCEDURES_ATTRIBUTE_NAME, PROCEDURE_ATTRIBUTE_NAME));
 
         verify(procedureService).getAllByDateAsc();
-        verify(procedureService).findByName("name");
+        verify(procedureService).findByName(NAME);
 
     }
 

@@ -21,6 +21,7 @@ import org.vinevweb.cardiohristov.repositories.TestimonialRepository;
 import org.vinevweb.cardiohristov.repositories.UserRepository;
 import org.vinevweb.cardiohristov.services.LogServiceImpl;
 import org.vinevweb.cardiohristov.services.TestimonialServiceImpl;
+import static org.vinevweb.cardiohristov.Constants.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -33,6 +34,11 @@ import static org.mockito.Mockito.verify;
 @DataJpaTest
 @ActiveProfiles("test")
 public class TestimonialServiceTests {
+
+    private static final String USERNAME = "boko@abv.bg";
+    private static final String TESTIMONIAL_ID = "1234";
+    private static final String CONTENT = "Content";
+
 
     @InjectMocks
     private TestimonialServiceImpl testimonialService;
@@ -54,7 +60,7 @@ public class TestimonialServiceTests {
     public void createTestimonialCreatesItInDbAndCreateLog() {
 
         User user = new User();
-        user.setUsername("boko@abv.bg");
+        user.setUsername(USERNAME);
         Authentication auth = Mockito.mock(Authentication.class);
         SecurityContext secCont = Mockito.mock(SecurityContext.class);
         Mockito.when(secCont.getAuthentication()).thenReturn(auth);
@@ -97,22 +103,22 @@ public class TestimonialServiceTests {
     @Test
     public void findByIdReturnsCorrectEntity() {
         TestimonialServiceModel testimonialServiceModel = new TestimonialServiceModel();
-        testimonialServiceModel.setId("1234");
+        testimonialServiceModel.setId(TESTIMONIAL_ID);
         Testimonial testimonial = new Testimonial();
-        testimonial.setId("1234");
+        testimonial.setId(TESTIMONIAL_ID);
 
         Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(testimonialServiceModel);
         Mockito.when(this.testimonialRepository.findById(Mockito.any())).thenReturn(Optional.of(testimonial));
-        String result = testimonialService.findById("1234").getId();
-        Assert.assertEquals("1234", result);
+        String result = testimonialService.findById(TESTIMONIAL_ID).getId();
+        Assert.assertEquals(TESTIMONIAL_ID, result);
 
     }
 
     @Test(expected = NullPointerException.class)
     public void findByInvalidIdThrowsException() {
-            testimonialService.findById("asd");
+            testimonialService.findById(TESTIMONIAL_ID);
             verify(testimonialRepository)
-                    .findById("asd");
+                    .findById(TESTIMONIAL_ID);
         }
 
 
@@ -120,13 +126,13 @@ public class TestimonialServiceTests {
     public void deleteTestimonialRemovesItFromDBAndCreatesLog() {
 
         Testimonial testimonial = new Testimonial();
-        testimonial.setId("1234");
-        testimonial.setContent("Content");
+        testimonial.setId(TESTIMONIAL_ID);
+        testimonial.setContent(CONTENT);
 
 
 
         User user = new User();
-        user.setUsername("boko@abv.bg");
+        user.setUsername(USERNAME);
         Authentication auth = Mockito.mock(Authentication.class);
         SecurityContext secCont = Mockito.mock(SecurityContext.class);
         Mockito.when(secCont.getAuthentication()).thenReturn(auth);
@@ -138,7 +144,7 @@ public class TestimonialServiceTests {
         Mockito.when(this.testimonialRepository.findById(Mockito.any())).thenReturn(Optional.of(testimonial));
         Mockito.when(this.userRepository.findById(Mockito.any())).thenReturn(Optional.of(user));
 
-        this.testimonialService.deleteTestimonial("1234");
+        this.testimonialService.deleteTestimonial(TESTIMONIAL_ID);
 
         verify(testimonialRepository)
                 .delete(testimonial);

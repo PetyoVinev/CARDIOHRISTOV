@@ -42,11 +42,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import static org.vinevweb.cardiohristov.Constants.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class ArticleControllerTest {
+    private static final String ARTICLES_ALL = "/articles/all";
+    private static final String ARTICLES_ATTRIBUTE_NAME = "articles";
+    private static final String ARTICLES_CREATE = "/articles/create";
+    private static final String REDIRECT_ARTICLES_ALL = "redirect:/articles/all";
+    private static final String ARTICLES_DELETE = "/articles/delete";
+    private static final String ARTICLE_ID = "1234";
+    private static final String FIRST_NAME = "Boko";
+    private static final String LAST_NAME = "Bokov";
+    private static final String ARTICLES_DETAIL_TITLE = "/articles/detail/{title}";
+    private static final String ARTICLE_ATTRIBUTE_NAME = "article";
+
     @Autowired
     private MockMvc mvc;
 
@@ -69,8 +81,8 @@ public class ArticleControllerTest {
     @WithMockUser
     public void getAll_returnsCorrectView() throws Exception {
         this.mvc
-                .perform(get("/articles/all").with(csrf()))
-                .andExpect(view().name("fragments/base-layout"));
+                .perform(get(ARTICLES_ALL).with(csrf()))
+                .andExpect(view().name(FRAGMENTS_BASE_LAYOUT_ROUTE));
         verify(procedureService).getAllByDateAsc();
         verify(articleService).findAllByOrderByWrittenOnDesc();
     }
@@ -79,8 +91,8 @@ public class ArticleControllerTest {
     @WithMockUser
     public void getAll_returnsPassCorrectAttribute() throws Exception {
         this.mvc
-                .perform(get("/articles/all").with(csrf()))
-                .andExpect(model().attributeExists("procedures", "articles"));
+                .perform(get(ARTICLES_ALL).with(csrf()))
+                .andExpect(model().attributeExists(PROCEDURES_ATTRIBUTE_NAME, ARTICLES_ATTRIBUTE_NAME));
         verify(procedureService).getAllByDateAsc();
         verify(articleService).findAllByOrderByWrittenOnDesc();
     }
@@ -90,10 +102,10 @@ public class ArticleControllerTest {
     public void validGetOnCreate_RedirectsToCreateArticlePage() throws Exception {
 
         this.mvc
-                .perform(get("/articles/create")
+                .perform(get(ARTICLES_CREATE)
                         .with(csrf()))
-                .andExpect(view().name("fragments/base-layout"))
-                .andExpect(model().attributeExists("procedures"));
+                .andExpect(view().name(FRAGMENTS_BASE_LAYOUT_ROUTE))
+                .andExpect(model().attributeExists(PROCEDURES_ATTRIBUTE_NAME));
         verify(procedureService).getAllByDateAsc();
 
     }
@@ -105,19 +117,19 @@ public class ArticleControllerTest {
 
         when(articleService.createArticle(any())).thenReturn(true);
         this.mvc
-                .perform(post("/articles/create")
+                .perform(post(ARTICLES_CREATE)
                         .with(csrf()))
-                .andExpect(view().name("redirect:/articles/all"));
+                .andExpect(view().name(REDIRECT_ARTICLES_ALL));
     }
 
     @Test
     @WithMockUser
     public void validPostOnDeleteWithUser_RedirectsToUnauthorized() throws Exception {
         this.mvc
-                .perform(post("/articles/delete")
+                .perform(post(ARTICLES_DELETE)
                         .with(csrf())
-                        .param("id", "1234"))
-                .andExpect(view().name("/error/unauthorized"));
+                        .param("id", ARTICLE_ID))
+                .andExpect(view().name(ERROR_UNAUTHORIZED));
 
     }
 
@@ -125,12 +137,12 @@ public class ArticleControllerTest {
     @WithMockUser(roles = {"MODERATOR"})
     public void validPostOnDeleteWithModerator_RedirectsToAll() throws Exception {
         this.mvc
-                .perform(post("/articles/delete")
+                .perform(post(ARTICLES_DELETE)
                         .with(csrf())
-                        .param("id", "1234"))
-                .andExpect(view().name("redirect:/articles/all"));
+                        .param("id", ARTICLE_ID))
+                .andExpect(view().name(REDIRECT_ARTICLES_ALL));
 
-        verify(articleService).deleteArticle("1234");
+        verify(articleService).deleteArticle(ARTICLE_ID);
 
     }
 
@@ -142,20 +154,20 @@ public class ArticleControllerTest {
         Comment comment = new Comment();
         Set<Comment> comments = new HashSet<>();
         User user = new User();
-        user.setFirstName("Boko");
-        user.setLastName("Bokov");
+        user.setFirstName(FIRST_NAME);
+        user.setLastName(LAST_NAME);
         comment.setUser(user);
         comment.setWrittenOn(LocalDateTime.now());
         comments.add(comment);
         articleServiceModel.setComments(comments);
 
-        when(articleService.findByTitle("title")).thenReturn(articleServiceModel);
+        when(articleService.findByTitle(TITLE)).thenReturn(articleServiceModel);
 
         this.mvc
-                .perform(get("/articles/detail/{title}", "title", "title")
-                        .param("title", "title"))
-                .andExpect(view().name("fragments/base-layout"))
-                .andExpect(model().attributeExists("procedures", "articles", "article"));
+                .perform(get(ARTICLES_DETAIL_TITLE, TITLE, TITLE)
+                        .param(TITLE, TITLE))
+                .andExpect(view().name(FRAGMENTS_BASE_LAYOUT_ROUTE))
+                .andExpect(model().attributeExists(PROCEDURES_ATTRIBUTE_NAME, ARTICLES_ATTRIBUTE_NAME, ARTICLE_ATTRIBUTE_NAME));
 
         verify(procedureService).getAllByDateAsc();
         verify(articleService).findByTitle("title");

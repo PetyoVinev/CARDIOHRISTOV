@@ -16,6 +16,7 @@ import org.vinevweb.cardiohristov.domain.entities.Log;
 import org.vinevweb.cardiohristov.domain.models.service.LogServiceModel;
 import org.vinevweb.cardiohristov.repositories.LogRepository;
 import org.vinevweb.cardiohristov.services.LogServiceImpl;
+import static org.vinevweb.cardiohristov.Constants.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,6 +32,12 @@ import static org.mockito.Mockito.verify;
 @ActiveProfiles("test")
 public class LogServiceTests {
 
+    private static final String DATETIME = "2019-04-09T13:47:23.542358";
+    private static final String DATETIME_EXPECTED = "2019-04-09T13:47:23";
+    private static final String USERNAME = "roko@abv.bg";
+    private static final String ARTICLE_CREATE_MSG = "Създадена е статия със заглавие: Title";
+
+
     @InjectMocks
     private LogServiceImpl logService;
 
@@ -44,15 +51,15 @@ public class LogServiceTests {
     @Test
     public void addEventCreatesEventAndSaveItToDB() {
 
-        String[] eventParams = new String[]{"2019-04-09T13:47:23.542358", "roko@abv.bg", "Създадена е статия със заглавие: Title"};
+        String[] eventParams = new String[]{DATETIME, USERNAME, ARTICLE_CREATE_MSG};
 
         boolean result = this.logService.addEvent(eventParams);
 
         ArgumentCaptor<Log> argument = ArgumentCaptor.forClass(Log.class);
         verify(logRepository).save(argument.capture());
-        assertEquals("roko@abv.bg", argument.getValue().getUser());
-        assertEquals(LocalDateTime.parse("2019-04-09T13:47:23"), argument.getValue().getDateTime());
-        assertEquals("Създадена е статия със заглавие: Title", argument.getValue().getEvent());
+        assertEquals(USERNAME, argument.getValue().getUser());
+        assertEquals(LocalDateTime.parse(DATETIME_EXPECTED), argument.getValue().getDateTime());
+        assertEquals(ARTICLE_CREATE_MSG, argument.getValue().getEvent());
 
         Assert.assertTrue(result);
 

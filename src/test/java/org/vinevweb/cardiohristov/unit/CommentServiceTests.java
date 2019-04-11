@@ -23,6 +23,7 @@ import org.vinevweb.cardiohristov.repositories.ArticleRepository;
 import org.vinevweb.cardiohristov.repositories.CommentRepository;
 import org.vinevweb.cardiohristov.repositories.UserRepository;
 import org.vinevweb.cardiohristov.services.CommentServiceImpl;
+import static org.vinevweb.cardiohristov.Constants.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -37,6 +38,7 @@ import static org.mockito.Mockito.verify;
 @ActiveProfiles("test")
 public class CommentServiceTests {
 
+    private static final String CONTENT = "la la la ";
     private Comment fakeComment;
 
     @InjectMocks
@@ -61,7 +63,7 @@ public class CommentServiceTests {
         this.fakeComment.setWrittenOn(LocalDateTime.now());
         this.fakeComment.setArticle(null);
         this.fakeComment.setUser(null);
-        this.fakeComment.setContent("la la la ");
+        this.fakeComment.setContent(CONTENT);
     }
 
     @Test

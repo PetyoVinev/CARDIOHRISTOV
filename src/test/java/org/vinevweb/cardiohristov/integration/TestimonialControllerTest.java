@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -14,8 +15,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vinevweb.cardiohristov.domain.models.binding.TestimonialCreateBindingModel;
+import org.vinevweb.cardiohristov.domain.models.service.TestimonialServiceModel;
 import org.vinevweb.cardiohristov.repositories.TestimonialRepository;
 import org.vinevweb.cardiohristov.repositories.UserRepository;
+import org.vinevweb.cardiohristov.services.ProcedureService;
 import org.vinevweb.cardiohristov.services.TestimonialServiceImpl;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -26,12 +30,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
+import static org.vinevweb.cardiohristov.Constants.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class TestimonialControllerTest {
+
+    private static final String TESTIMONIALS_CREATE = "/testimonials/create";
+    private static final String CONTENT = "content";
+    private static final String CONTENT_VALUE = "Very good doctor!";
+    private static final String REDIRECT_TESTIMONIALS_ALL = "redirect:/testimonials/all";
+    private static final String TESTIMONIAL_CREATE_BINDING_MODEL = "testimonialCreateBindingModel";
+    private static final String TESTIMONIALS_DELETE = "/testimonials/delete";
+    private static final String TESTIMONIAL_ID = "1234";
+    private static final String TESTIMONIALS_ALL = "/testimonials/all";
+    private static final String TESTIMONIALS_ATTRIBUTE_NAME = "testimonials";
+
+
     @Autowired
     private MockMvc mvc;
 
@@ -40,6 +56,12 @@ public class TestimonialControllerTest {
 
     @MockBean
     private TestimonialServiceImpl testimonialService;
+
+    @MockBean
+    private ProcedureService procedureService;
+
+    @MockBean
+    private ModelMapper modelMapper;
 
     @Before
     public void emptyDB() throws Exception {
@@ -53,10 +75,10 @@ public class TestimonialControllerTest {
 
         when(testimonialService.createTestimonial(any())).thenReturn(true);
         this.mvc
-                .perform(post("/testimonials/create")
+                .perform(post(TESTIMONIALS_CREATE)
                         .with(csrf())
-                        .param("content", "Very good doctor!"))
-                .andExpect(view().name("redirect:/testimonials/all"));
+                        .param(CONTENT, CONTENT_VALUE))
+                .andExpect(view().name(REDIRECT_TESTIMONIALS_ALL));
 
     }
 
@@ -64,25 +86,50 @@ public class TestimonialControllerTest {
     @WithMockUser
     public void validPostOnCreate_InsertsTestimonialInDB() throws Exception {
 
-        when(testimonialService.createTestimonial(any())).thenReturn(true);
+        TestimonialCreateBindingModel testimonialCreateBindingModel = new TestimonialCreateBindingModel();
+        testimonialCreateBindingModel.setContent(CONTENT);
+
+        TestimonialServiceModel testimonialServiceModel = modelMapper.map(testimonialCreateBindingModel, TestimonialServiceModel.class);
+
+        when(testimonialService.createTestimonial(testimonialServiceModel)).thenReturn(true);
         this.mvc
-                .perform(post("/testimonials/create")
+                .perform(post(TESTIMONIALS_CREATE)
                         .with(csrf())
-                        .param("content", "Very good doctor!"));
+                        .flashAttr(TESTIMONIAL_CREATE_BINDING_MODEL, testimonialCreateBindingModel))
+                        .andExpect(view().name(REDIRECT_TESTIMONIALS_ALL));
 
         verify(testimonialService)
-                .createTestimonial(any());
+                .createTestimonial(testimonialServiceModel);
     }
 
+    @Test
+    @WithMockUser
+    public void invalidPostOnCreate_ThrowsException() throws Exception {
+
+        TestimonialCreateBindingModel testimonialCreateBindingModel = new TestimonialCreateBindingModel();
+        testimonialCreateBindingModel.setContent(CONTENT);
+
+        TestimonialServiceModel testimonialServiceModel = modelMapper.map(testimonialCreateBindingModel, TestimonialServiceModel.class);
+
+        when(testimonialService.createTestimonial(testimonialServiceModel)).thenReturn(false);
+        this.mvc
+                .perform(post(TESTIMONIALS_CREATE)
+                        .with(csrf())
+                        .flashAttr(TESTIMONIAL_CREATE_BINDING_MODEL, testimonialCreateBindingModel))
+                .andExpect(view().name(FRAGMENTS_BASE_LAYOUT_ROUTE));
+
+        verify(testimonialService)
+                .createTestimonial(testimonialServiceModel);
+    }
 
     @Test
     @WithMockUser
     public void validPostOnDeleteWithUser_RedirectsToUnauthorized() throws Exception {
         this.mvc
-                .perform(post("/testimonials/delete")
+                .perform(post(TESTIMONIALS_DELETE)
                         .with(csrf())
-                        .param("id", "1234"))
-                .andExpect(view().name("/error/unauthorized"));
+                        .param("id", TESTIMONIAL_ID))
+                .andExpect(view().name(ERROR_UNAUTHORIZED));
 
     }
 
@@ -90,27 +137,32 @@ public class TestimonialControllerTest {
     @WithMockUser(roles={"MODERATOR"})
     public void validPostOnDeleteWithModerator_RedirectsToAll() throws Exception {
         this.mvc
-                .perform(post("/testimonials/delete")
+                .perform(post(TESTIMONIALS_DELETE)
                         .with(csrf())
-                        .param("id", "1234"))
-                .andExpect(view().name("redirect:/testimonials/all"));
-
+                        .param("id", TESTIMONIAL_ID))
+                .andExpect(view().name(REDIRECT_TESTIMONIALS_ALL));
+        verify(testimonialService)
+                .deleteTestimonial(TESTIMONIAL_ID);
     }
 
     @Test
     @WithMockUser
     public void getAll_returnsCorrectView() throws Exception {
         this.mvc
-                .perform(get("/testimonials/all").with(csrf()))
-                .andExpect(view().name("fragments/base-layout"));
+                .perform(get(TESTIMONIALS_ALL).with(csrf()))
+                .andExpect(view().name(FRAGMENTS_BASE_LAYOUT_ROUTE));
     }
 
     @Test
     @WithMockUser
     public void getAll_returnsPassCorrectAttribute() throws Exception {
         this.mvc
-                .perform(get("/testimonials/all").with(csrf()))
-                .andExpect(model().attributeExists("procedures", "testimonials"));
+                .perform(get(TESTIMONIALS_ALL).with(csrf()))
+                .andExpect(model().attributeExists(PROCEDURES_ATTRIBUTE_NAME, TESTIMONIALS_ATTRIBUTE_NAME));
+        verify(testimonialService)
+                .findAllByOrderByWrittenOnDesc();
+        verify(procedureService)
+                .getAllByDateAsc();
     }
 
 }

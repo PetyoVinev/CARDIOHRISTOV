@@ -12,11 +12,13 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-
+import static org.vinevweb.cardiohristov.Constants.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 public class HomeControllerTest {
+    private static final String CONTACT_US = "/contactUs";
+
     @Autowired
     private MockMvc mvc;
 
@@ -24,12 +26,12 @@ public class HomeControllerTest {
     @Test
     public void index_returnCorrectMvc() throws Exception {
         this.mvc.perform(get("/"))
-                .andExpect(view().name("fragments/base-layout"));
+                .andExpect(view().name(FRAGMENTS_BASE_LAYOUT_ROUTE));
     }
     @Test
     @WithMockUser
     public void contactUs_returnCorrectMvc() throws Exception {
-        this.mvc.perform(get("/contactUs"))
-                .andExpect(view().name("fragments/base-layout"));
+        this.mvc.perform(get(CONTACT_US))
+                .andExpect(view().name(FRAGMENTS_BASE_LAYOUT_ROUTE));
     }
 }

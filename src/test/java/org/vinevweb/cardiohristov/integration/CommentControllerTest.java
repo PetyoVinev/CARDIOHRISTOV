@@ -28,12 +28,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.vinevweb.cardiohristov.Constants.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class CommentControllerTest {
+    private static final String COMMENTS_CREATE = "/comments/create";
+    private static final String REDIRECT_ARTICLES_DETAIL_TITLE = "redirect:/articles/detail/title";
+
+
     @Autowired
     private MockMvc mvc;
 
@@ -59,13 +64,13 @@ public class CommentControllerTest {
         when(commentService.createComment(any())).thenReturn(true);
 
         ArticleServiceModel articleServiceModel = new ArticleServiceModel();
-        articleServiceModel.setTitle("title");
+        articleServiceModel.setTitle(TITLE);
         when(articleService.findById(any())).thenReturn(articleServiceModel);
 
         this.mvc
-                .perform(post("/comments/create")
+                .perform(post(COMMENTS_CREATE)
                         .with(csrf()))
-                .andExpect(view().name("redirect:/articles/detail/title"));
+                .andExpect(view().name(REDIRECT_ARTICLES_DETAIL_TITLE));
 
         verify(commentService).createComment(any());
     }

@@ -27,6 +27,7 @@ import org.vinevweb.cardiohristov.repositories.UserRoleRepository;
 import org.vinevweb.cardiohristov.services.CommentServiceImpl;
 import org.vinevweb.cardiohristov.services.LogService;
 import org.vinevweb.cardiohristov.services.user.UserServiceImpl;
+import static org.vinevweb.cardiohristov.Constants.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -46,6 +47,8 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 public class UserServiceTests {
 
+    private static final String FAKE_HASH = "fakeHash";
+    private static final String MODERATOR = "moderator";
     private User fakeUser;
 
     @InjectMocks
@@ -71,13 +74,13 @@ public class UserServiceTests {
 
     @Before
     public void createFakeUser() {
-        when(this.bCryptPasswordEncoder.encode(Mockito.anyString())).thenReturn("fakeHash");
+        when(this.bCryptPasswordEncoder.encode(Mockito.anyString())).thenReturn(FAKE_HASH);
         this.fakeUser = new User();
-        fakeUser.setId("0c39a7b4-b039-4d78-a0f8-333be7b0e718");
-        fakeUser.setFirstName("Fake");
-        fakeUser.setLastName("Fakes");
-        fakeUser.setUsername("fake@fake.bg");
-        fakeUser.setPassword(this.bCryptPasswordEncoder.encode("1111"));
+        fakeUser.setId(USER_ID);
+        fakeUser.setFirstName(USER_FIRST_NAME);
+        fakeUser.setLastName(USER_LAST_NAME);
+        fakeUser.setUsername(USER_USERNAME);
+        fakeUser.setPassword(this.bCryptPasswordEncoder.encode(PASSWORD));
         fakeUser.setAuthorities(new HashSet<>());
     }
 
@@ -89,7 +92,7 @@ public class UserServiceTests {
 
         Assert.assertEquals("", this.fakeUser.getUsername(), userDetails.getUsername());
 
-        Mockito.verify(this.userRepository).findByUsername("fake@fake.bg");
+        Mockito.verify(this.userRepository).findByUsername(USER_USERNAME);
     }
 
     @Test
@@ -99,17 +102,17 @@ public class UserServiceTests {
         when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(modelMapper.map(this.fakeUser, UserServiceModel.class));
         when(this.userRepository.findByUsername(Mockito.any())).thenReturn(Optional.of(this.fakeUser));
 
-        UserServiceModel userServiceModel = this.userService.extractUserByEmail("fake@fake.bg");
+        UserServiceModel userServiceModel = this.userService.extractUserByEmail(USER_USERNAME);
 
         Assert.assertEquals("", this.fakeUser.getUsername(), userServiceModel.getEmail());
 
-        Mockito.verify(this.userRepository).findByUsername("fake@fake.bg");
+        Mockito.verify(this.userRepository).findByUsername(USER_USERNAME);
     }
 
     @Test(expected = UsernameNotFoundException.class)
     public void extractUserByNonexistentEmailShouldThrowException() {
-        this.userService.extractUserByEmail("fake@fake.bg");
-        Mockito.verify(this.userRepository).findByUsername("fake@fake.bg");
+        this.userService.extractUserByEmail(USER_USERNAME);
+        Mockito.verify(this.userRepository).findByUsername(USER_USERNAME);
     }
 
     @Test
@@ -133,17 +136,17 @@ public class UserServiceTests {
         when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(modelMapper.map(this.fakeUser, UserServiceModel.class));
         when(this.userRepository.findById(Mockito.any())).thenReturn(Optional.of(this.fakeUser));
 
-        UserServiceModel userServiceModel = this.userService.extractUserById("0c39a7b4-b039-4d78-a0f8-333be7b0e718");
+        UserServiceModel userServiceModel = this.userService.extractUserById(USER_ID);
 
-        Assert.assertEquals("", "0c39a7b4-b039-4d78-a0f8-333be7b0e718", userServiceModel.getId());
+        Assert.assertEquals("", USER_ID, userServiceModel.getId());
 
-        Mockito.verify(this.userRepository).findById("0c39a7b4-b039-4d78-a0f8-333be7b0e718");
+        Mockito.verify(this.userRepository).findById(USER_ID);
     }
 
     @Test(expected = IdNotFoundException.class)
     public void extractUserByIdShouldThrowException() {
-        this.userService.extractUserById("0c39a7b4-b039-4d78-a0f8-333be7b0e718");
-        Mockito.verify(this.userRepository).findById("0c39a7b4-b039-4d78-a0f8-333be7b0e718");
+        this.userService.extractUserById(USER_ID);
+        Mockito.verify(this.userRepository).findById(USER_ID);
     }
 
     @Test
@@ -164,7 +167,7 @@ public class UserServiceTests {
         ModelMapper modelMapper = new ModelMapper();
         UserServiceModel userServiceModel = modelMapper.map(this.fakeUser, UserServiceModel.class);
         this.userService.editUser(userServiceModel);
-        Mockito.verify(this.userRepository).findByUsername("fake@fake.bg");
+        Mockito.verify(this.userRepository).findByUsername(USER_USERNAME);
     }
 
     @Test
@@ -183,7 +186,7 @@ public class UserServiceTests {
 
         when(logService.addEvent(Mockito.any())).thenReturn(true);
 
-        boolean result = this.userService.editUserRole(userServiceModel.getEmail(), "moderator");
+        boolean result = this.userService.editUserRole(userServiceModel.getEmail(), MODERATOR);
 
         Assert.assertTrue(result);
     }
@@ -192,7 +195,7 @@ public class UserServiceTests {
     public void deleteUserRemovesItFromDBAndCreatesLog() {
 
         User user  = new User();
-        user.setUsername("boko@abv.bg");
+        user.setUsername(USER_USERNAME);
         user.setComments(new HashSet<>());
         Comment comment1 = new Comment();
         Comment comment2 = new Comment();
@@ -200,7 +203,7 @@ public class UserServiceTests {
         user.getComments().add(comment2);
 
         UserServiceModel userServiceModel = new UserServiceModel();
-        userServiceModel.setId("1234");
+        userServiceModel.setId(USER_ID);
 
         Mockito.when(this.userRepository.findById(Mockito.any())).thenReturn(Optional.of(user));
 
@@ -221,7 +224,7 @@ public class UserServiceTests {
                 .removeCommentFromArticleAndDelete(comment2);
 
         verify(userRepository)
-                .deleteById("1234");
+                .deleteById(USER_ID);
         verify(logService)
                 .addEvent(any());
 

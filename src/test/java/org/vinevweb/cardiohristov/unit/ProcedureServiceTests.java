@@ -28,6 +28,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.vinevweb.cardiohristov.Constants.*;
 
 @RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
@@ -35,6 +36,11 @@ import static org.mockito.Mockito.verify;
 @ActiveProfiles("test")
 public class ProcedureServiceTests {
 
+
+    private static final String USERNAME = "boko@abv.bg";
+    private static final String PROCEDURE_TITLE = "Procedure Title";
+    private static final String PROCEDURE_ID = "1234";
+    private static final String NAME = "Name";
 
     @InjectMocks
     private ProcedureServiceImpl procedureService;
@@ -53,7 +59,7 @@ public class ProcedureServiceTests {
     public void createProcedureCreatesItInDbAndCreateLog() {
 
         User user = new User();
-        user.setUsername("boko@abv.bg");
+        user.setUsername(USERNAME);
 
         Authentication auth = Mockito.mock(Authentication.class);
         SecurityContext secCont = Mockito.mock(SecurityContext.class);
@@ -64,7 +70,7 @@ public class ProcedureServiceTests {
         ProcedureServiceModel procedureServiceModel = new ProcedureServiceModel();
 
         Procedure procedure = new Procedure();
-        procedure.setName("Procedure Title");
+        procedure.setName(PROCEDURE_TITLE);
 
         Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(procedure);
 
@@ -88,36 +94,36 @@ public class ProcedureServiceTests {
     @Test
     public void findByIdReturnsCorrectEntity() {
         ProcedureServiceModel procedureServiceModel = new ProcedureServiceModel();
-        procedureServiceModel.setId("1234");
+        procedureServiceModel.setId(PROCEDURE_ID);
         Procedure procedure = new Procedure();
-        procedure.setId("1234");
+        procedure.setId(PROCEDURE_ID);
 
         Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(procedureServiceModel);
         Mockito.when(this.procedureRepository.findById(Mockito.any())).thenReturn(Optional.of(procedure));
-        String result = procedureService.findById("1234").getId();
-        Assert.assertEquals("1234", result);
+        String result = procedureService.findById(PROCEDURE_ID).getId();
+        Assert.assertEquals(PROCEDURE_ID, result);
 
     }
 
     @Test(expected = NullPointerException.class)
     public void findByInvalidIdThrowsException() {
-            procedureService.findById("asd");
+            procedureService.findById(PROCEDURE_ID);
             verify(procedureRepository)
-                    .findById("asd");
+                    .findById(PROCEDURE_ID);
         }
 
 
     @Test
     public void findByNameReturnsCorrectEntity() {
         ProcedureServiceModel procedureServiceModel = new ProcedureServiceModel();
-        procedureServiceModel.setName("Name");
+        procedureServiceModel.setName(NAME);
         Procedure procedure = new Procedure();
-        procedure.setName("Name");
+        procedure.setName(NAME);
 
         Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(procedureServiceModel);
         Mockito.when(this.procedureRepository.findByName(Mockito.any())).thenReturn(procedure);
-        String result = procedureService.findByName("Name").getName();
-        Assert.assertEquals("Name", result);
+        String result = procedureService.findByName(NAME).getName();
+        Assert.assertEquals(NAME, result);
 
     }
 
@@ -125,23 +131,23 @@ public class ProcedureServiceTests {
     public void deleteArticleRemovesItFromDBAndCreatesLog() {
 
         Procedure procedure = new Procedure();
-        procedure.setId("1234");
-        procedure.setName("Name");
+        procedure.setId(PROCEDURE_ID);
+        procedure.setName(NAME);
 
         Mockito.when(this.procedureRepository.getOne(Mockito.any())).thenReturn(procedure);
 
         User user = new User();
-        user.setUsername("boko@abv.bg");
+        user.setUsername(USERNAME);
         Authentication auth = Mockito.mock(Authentication.class);
         SecurityContext secCont = Mockito.mock(SecurityContext.class);
         Mockito.when(secCont.getAuthentication()).thenReturn(auth);
         SecurityContextHolder.setContext(secCont);
         Mockito.when(auth.getPrincipal()).thenReturn(user);
 
-        this.procedureService.deleteProcedure("1234");
+        this.procedureService.deleteProcedure(PROCEDURE_ID);
 
         verify(procedureRepository)
-                .deleteById("1234");
+                .deleteById(PROCEDURE_ID);
 
         verify(logService)
                 .addEvent(any());

@@ -37,6 +37,11 @@ import static org.mockito.Mockito.verify;
 @ActiveProfiles("test")
 public class ArticleServiceTests {
 
+    private static final String ARTICLE_ID = "1234";
+    private static final String EMAIL = "boko@abv.bg";
+    private static final String ARTICLE_TITLE = "Article Title";
+
+
     @InjectMocks
     private ArticleServiceImpl articleService;
 
@@ -60,7 +65,7 @@ public class ArticleServiceTests {
     public void createArticleCreatesItInDbAndCreateLog() {
 
         User user = new User();
-        user.setUsername("boko@abv.bg");
+        user.setUsername(EMAIL);
 
         Authentication auth = Mockito.mock(Authentication.class);
         SecurityContext secCont = Mockito.mock(SecurityContext.class);
@@ -71,7 +76,7 @@ public class ArticleServiceTests {
         ArticleServiceModel articleServiceModel = new ArticleServiceModel();
 
         Article article = new Article();
-        article.setTitle("Article Title");
+        article.setTitle(ARTICLE_TITLE);
 
         Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(article);
         Mockito.when(this.userRepository.findById(Mockito.any())).thenReturn(Optional.of(user));
@@ -96,36 +101,36 @@ public class ArticleServiceTests {
     @Test
     public void findByIdReturnsCorrectEntity() {
         ArticleServiceModel articleServiceModel = new ArticleServiceModel();
-        articleServiceModel.setId("1234");
+        articleServiceModel.setId(ARTICLE_ID);
         Article article = new Article();
-        article.setId("1234");
+        article.setId(ARTICLE_ID);
 
         Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(articleServiceModel);
         Mockito.when(this.articleRepository.findById(Mockito.any())).thenReturn(Optional.of(article));
-        String result = articleService.findById("1234").getId();
-        Assert.assertEquals("1234", result);
+        String result = articleService.findById(ARTICLE_ID).getId();
+        Assert.assertEquals(ARTICLE_ID, result);
 
     }
 
     @Test(expected = NullPointerException.class)
     public void findByInvalidIdThrowsException() {
-            articleService.findById("asd");
+            articleService.findById(ARTICLE_ID);
             verify(articleRepository)
-                    .findById("asd");
+                    .findById(ARTICLE_ID);
         }
 
 
     @Test
     public void findByTitleReturnsCorrectEntity() {
         ArticleServiceModel articleServiceModel = new ArticleServiceModel();
-        articleServiceModel.setTitle("Title");
+        articleServiceModel.setTitle(ARTICLE_TITLE);
         Article article = new Article();
-        article.setTitle("Title");
+        article.setTitle(ARTICLE_TITLE);
 
         Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(articleServiceModel);
         Mockito.when(this.articleRepository.findByTitle(Mockito.any())).thenReturn(article);
-        String result = articleService.findByTitle("1234").getTitle();
-        Assert.assertEquals("Title", result);
+        String result = articleService.findByTitle(ARTICLE_ID).getTitle();
+        Assert.assertEquals(ARTICLE_TITLE, result);
 
     }
 
@@ -133,7 +138,7 @@ public class ArticleServiceTests {
     public void deleteArticleRemovesItFromDBAndCreatesLog() {
 
         Article article = new Article();
-        article.setTitle("Title");
+        article.setTitle(ARTICLE_TITLE);
         article.setComments(new HashSet<>());
         Comment comment1 = new Comment();
         Comment comment2 = new Comment();
@@ -148,7 +153,7 @@ public class ArticleServiceTests {
         SecurityContextHolder.setContext(secCont);
         Mockito.when(auth.getPrincipal()).thenReturn(new User());
 
-        this.articleService.deleteArticle("1234");
+        this.articleService.deleteArticle(ARTICLE_ID);
 
         verify(articleRepository, times(2))
                 .saveAndFlush(article);
@@ -159,7 +164,7 @@ public class ArticleServiceTests {
                 .removeCommentFromUserAndDelete(comment2);
 
         verify(articleRepository)
-                .deleteById("1234");
+                .deleteById(ARTICLE_ID);
         verify(logService)
                 .addEvent(any());
 

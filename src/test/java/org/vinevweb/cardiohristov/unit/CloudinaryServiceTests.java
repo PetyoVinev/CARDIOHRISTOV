@@ -17,7 +17,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.multipart.MultipartFile;
 import org.vinevweb.cardiohristov.services.CloudinaryServiceImpl;
-
+import static org.vinevweb.cardiohristov.Constants.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +39,14 @@ import static org.mockito.Mockito.when;
 public class CloudinaryServiceTests {
 
 
+    private static final String PATH_DESKTOP_TEXT_TXT = "path\\Desktop\\text.txt";
+    private static final String TEXT_TEXT = "text.text";
+    private static final String TEXT_TXT = "text.txt";
+    private static final String TEXT_PLAIN = "text/plain";
+    private static final String TEMP_FILE = "temp-file";
+    private static final String PATH = "path";
+    private static final String URL = "url";
+
     @InjectMocks
     private CloudinaryServiceImpl cloudinaryService;
 
@@ -51,10 +59,10 @@ public class CloudinaryServiceTests {
 
     @Test
     public void uploadImageReturnsUrlFromMultipartfile() throws IOException {
-        Path path = Paths.get("path\\Desktop\\text.txt");
-        String name = "text.text";
-        String originalFileName = "text.txt";
-        String contentType = "text/plain";
+        Path path = Paths.get(PATH_DESKTOP_TEXT_TXT);
+        String name = TEXT_TEXT;
+        String originalFileName = TEXT_TXT;
+        String contentType = TEXT_PLAIN;
         byte[] content = null;
         try {
             content = Files.readAllBytes(path);
@@ -62,11 +70,11 @@ public class CloudinaryServiceTests {
         }
         MultipartFile mockMultipartFile = new MockMultipartFile(name,
                 originalFileName, contentType, content);
-        File fileToUpload = File.createTempFile("temp-file", mockMultipartFile.getOriginalFilename());
+        File fileToUpload = File.createTempFile(TEMP_FILE, mockMultipartFile.getOriginalFilename());
         mockMultipartFile.transferTo(fileToUpload);
 
         Map<String, String> map = new HashMap<>();
-        map.put("url", "path");
+        map.put(URL, PATH);
 
         when(uploader.upload(Mockito.any(), Mockito.any())).thenReturn(map);
         when(this.cloudinary.uploader()).thenReturn(uploader);
@@ -77,7 +85,7 @@ public class CloudinaryServiceTests {
                 .uploader();
         verify(uploader)
                 .upload(any(), any());
-        Assert.assertEquals("path",result);
+        Assert.assertEquals(PATH,result);
 
 
     }

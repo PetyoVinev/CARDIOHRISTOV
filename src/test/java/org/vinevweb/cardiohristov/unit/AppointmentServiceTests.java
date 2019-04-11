@@ -34,6 +34,17 @@ import static org.mockito.Mockito.verify;
 @ActiveProfiles("test")
 public class AppointmentServiceTests {
 
+    private static final String APPOINTMENT_ID = "1234";
+    private static final String APPOINTMENT_FIRST_NAME = "Boko";
+    private static final String APPOINTMENT_FAKE_DATETIME = "2019-04-16T08:00";
+    private static final String FAKE_DATE_2 = "16/04/2019 вторник";
+    private static final String APPOINTMENT_FAKE_DATETIME_2 = "2019-04-16T08:30";
+    private static final String FAKE_HOUR_8 = "08:00";
+    private static final String FAKE_HOUR_8_30 = "08:30";
+    private static final String FAKE_HOUR_9 = "09:00";
+    private static final String FAKE_DATIME_3 = "2019-04-23T08:30";
+    private static final String FAKE_DATE_3 = "23/04/2019 вторник";
+
     @InjectMocks
     private AppointmentServiceImpl appointmentService;
 
@@ -49,11 +60,11 @@ public class AppointmentServiceTests {
     @Test
     public void findByIdReturnsCorrectEntity() {
         AppointmentServiceModel appointmentServiceModel = new AppointmentServiceModel();
-        appointmentServiceModel.setId("1234");
+        appointmentServiceModel.setId(APPOINTMENT_ID);
 
         Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(appointmentServiceModel);
-        String result = appointmentService.findById("1234").getId();
-        Assert.assertEquals("1234", result);
+        String result = appointmentService.findById(APPOINTMENT_ID).getId();
+        Assert.assertEquals(APPOINTMENT_ID, result);
 
     }
 
@@ -69,34 +80,34 @@ public class AppointmentServiceTests {
     @Test
     public void createAppointmentWorksCorrect() {
         AppointmentServiceModel appointmentServiceModel = new AppointmentServiceModel();
-        appointmentServiceModel.setId("1234");
+        appointmentServiceModel.setId(APPOINTMENT_ID);
 
         Appointment appointment = new Appointment();
-        appointment.setId("1234");
+        appointment.setId(APPOINTMENT_ID);
 
         Mockito.when(this.modelMapper.map(Mockito.any(), Mockito.any())).thenReturn(appointment);
         Mockito.when(this.appointmentRepository.saveAndFlush(Mockito.any())).thenReturn(appointment);
         String result = appointmentService.createAppointment(appointmentServiceModel);
-        Assert.assertEquals("1234", result);
+        Assert.assertEquals(APPOINTMENT_ID, result);
 
     }
 
     @Test
     public void annulAppointmentRemovesItFromDb() {
-        this.appointmentService.annulAppointment("1234");
+        this.appointmentService.annulAppointment(APPOINTMENT_ID);
         verify(appointmentRepository)
-                .deleteById("1234");
+                .deleteById(APPOINTMENT_ID);
 
     }
 
     @Test
     public void deleteAppointmentRemovesItFromDbAndCreateLog() {
         AppointmentServiceModel appointmentServiceModel = new AppointmentServiceModel();
-        appointmentServiceModel.setId("1234");
+        appointmentServiceModel.setId(APPOINTMENT_ID);
 
         Appointment appointment = new Appointment();
-        appointment.setId("1234");
-        appointment.setAppointmentName("Boko");
+        appointment.setId(APPOINTMENT_ID);
+        appointment.setAppointmentName(APPOINTMENT_FIRST_NAME);
         appointment.setDatetime(LocalDateTime.now());
 
         Authentication auth = Mockito.mock(Authentication.class);
@@ -109,7 +120,7 @@ public class AppointmentServiceTests {
         this.appointmentService.deleteAppointment(appointmentServiceModel);
 
         verify(appointmentRepository)
-                .deleteById("1234");
+                .deleteById(APPOINTMENT_ID);
         verify(logService)
                 .addEvent(any());
 
@@ -117,12 +128,12 @@ public class AppointmentServiceTests {
     @Test
     public void updateAppointmentUpdateItInDbAndCreateLog() {
         AppointmentServiceModel appointmentServiceModel = new AppointmentServiceModel();
-        appointmentServiceModel.setId("1234");
-        appointmentServiceModel.setAppointmentName("Boko");
+        appointmentServiceModel.setId(APPOINTMENT_ID);
+        appointmentServiceModel.setAppointmentName(APPOINTMENT_FIRST_NAME);
         appointmentServiceModel.setDatetime(LocalDateTime.now());
 
         Appointment appointment = new Appointment();
-        appointment.setId("1234");
+        appointment.setId(APPOINTMENT_ID);
 
 
         Authentication auth = Mockito.mock(Authentication.class);
@@ -136,7 +147,7 @@ public class AppointmentServiceTests {
 
 
        String result =  this.appointmentService.updateAppointment(appointmentServiceModel);
-       Assert.assertEquals("1234", result);
+       Assert.assertEquals(APPOINTMENT_ID, result);
         verify(appointmentRepository)
                 .saveAndFlush(appointment);
         verify(logService)
@@ -147,11 +158,11 @@ public class AppointmentServiceTests {
     @Test
     public void getBuzyHoursForDateReturnsOccupiedHours() {
 
-        String date = "16/04/2019 вторник";
+        String date = FAKE_DATE_2;
         Appointment appointment1 = new Appointment();
-        appointment1.setDatetime( LocalDateTime.parse("2019-04-16T08:00"));
+        appointment1.setDatetime( LocalDateTime.parse(APPOINTMENT_FAKE_DATETIME));
         Appointment appointment2 = new Appointment();
-        appointment2.setDatetime( LocalDateTime.parse("2019-04-16T08:30"));
+        appointment2.setDatetime( LocalDateTime.parse(APPOINTMENT_FAKE_DATETIME_2));
         List<Appointment> appointments  = new ArrayList<>();
         appointments.add(appointment1);
         appointments.add(appointment2);
@@ -161,10 +172,10 @@ public class AppointmentServiceTests {
 
          String[][] result  =   this.appointmentService.getBuzyHoursForDate(date);
 
-        Assert.assertEquals("08:00", result[0][0]);
-        Assert.assertEquals("08:30", result[0][1]);
-        Assert.assertEquals("08:30", result[1][0]);
-        Assert.assertEquals("09:00", result[1][1]);
+        Assert.assertEquals(FAKE_HOUR_8, result[0][0]);
+        Assert.assertEquals(FAKE_HOUR_8_30, result[0][1]);
+        Assert.assertEquals(FAKE_HOUR_8_30, result[1][0]);
+        Assert.assertEquals(FAKE_HOUR_9, result[1][1]);
 
 
     }
@@ -174,9 +185,9 @@ public class AppointmentServiceTests {
     public void cleanScheduleFromOldAppointmentsWorksCorrect() {
 
         Appointment appointment1 = new Appointment();
-        appointment1.setDatetime( LocalDateTime.parse("2019-04-16T08:00"));
+        appointment1.setDatetime( LocalDateTime.parse(APPOINTMENT_FAKE_DATETIME));
         Appointment appointment2 = new Appointment();
-        appointment2.setDatetime( LocalDateTime.parse("2019-04-16T08:30"));
+        appointment2.setDatetime( LocalDateTime.parse(APPOINTMENT_FAKE_DATETIME_2));
         List<Appointment> appointments  = new ArrayList<>();
         appointments.add(appointment1);
         appointments.add(appointment2);
@@ -196,10 +207,10 @@ public class AppointmentServiceTests {
     @Test
     public void findByDateTimeWorksCorrect() {
 
-        this.appointmentService.findByDateTime("23/04/2019 вторник", "08:30");
+        this.appointmentService.findByDateTime(FAKE_DATE_3, FAKE_HOUR_8_30);
 
         verify(appointmentRepository)
-                .findAppointmentByDatetime(LocalDateTime.parse("2019-04-23T08:30"));
+                .findAppointmentByDatetime(LocalDateTime.parse(FAKE_DATIME_3));
 
     }
 

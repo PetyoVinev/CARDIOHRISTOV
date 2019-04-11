@@ -20,25 +20,17 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.BindingResult;
 import org.vinevweb.cardiohristov.domain.entities.User;
-import org.vinevweb.cardiohristov.domain.models.binding.AppointmentCreateBindingModel;
 import org.vinevweb.cardiohristov.domain.models.binding.ProfileDeleteBindingModel;
 import org.vinevweb.cardiohristov.domain.models.binding.UserRegisterBindingModel;
-import org.vinevweb.cardiohristov.domain.models.service.AppointmentServiceModel;
 import org.vinevweb.cardiohristov.domain.models.service.UserRoleServiceModel;
 import org.vinevweb.cardiohristov.domain.models.service.UserServiceModel;
-import org.vinevweb.cardiohristov.domain.models.view.EditDeleteAppointmentViewModel;
 import org.vinevweb.cardiohristov.domain.models.view.UserViewModel;
-import org.vinevweb.cardiohristov.repositories.AppointmentRepository;
 import org.vinevweb.cardiohristov.repositories.UserRepository;
-import org.vinevweb.cardiohristov.services.AppointmentServiceImpl;
 import org.vinevweb.cardiohristov.services.LogServiceImpl;
 import org.vinevweb.cardiohristov.services.ProcedureServiceImpl;
-import org.vinevweb.cardiohristov.services.user.UserService;
 import org.vinevweb.cardiohristov.services.user.UserServiceImpl;
 
 import java.nio.charset.Charset;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -53,6 +45,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.vinevweb.cardiohristov.Constants.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -60,18 +53,37 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class AdminControllerTest {
 
+    private static final String FAKE_HASH = "fakeHash";
+    private static final String PROFILES_ATTRIBUTE_NAME = "profiles";
+    private static final String PROCEDURES_ATTRIBUTE_NAME = "procedures";
+    private static final String EDIT_ROLE_REQUEST_BODY = "email=pesho%40abv.bg&role=Moderator";
+    private static final String SUCCESS_MSG = "Success";
+    private static final String EDIT_ROLE_MAIL = "pesho@abv.bg";
+    private static final String MODERATOR_ROLE = "Moderator";
+    private static final String REDIRECT_PROFILES_ROUTE = "redirect:/profiles";
+    private static final String LOG_VIEW_MODEL_ATTRIBUTE_NAME = "logViewModel";
+    private static final String PROFILES = "/profiles";
+    private static final String API_PROFILE_ID = "/api/profile{id}";
+    private static final String BINDING_RESULT = "bindingResult";
+    private static final String PROFILE_ROLE_EDIT = "/profile/roleEdit";
+    private static final String PROFILE_DELETE_BINDING_MODEL = "profileDeleteBindingModel";
+    private static final String DELETE_URL = "/delete";
+    private static final String LOGS_URL = "/logs";
+
     private User fakeUser;
+
+
 
     private static final MediaType APPLICATION_JSON_UTF8 = new MediaType(
             MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
-            Charset.forName("utf8")
+            Charset.forName(UTF_8)
     );
 
     private static final MediaType APPLICATION_TEXT_UTF8 = new MediaType(
             MediaType.TEXT_PLAIN.getType(),
             MediaType.TEXT_PLAIN.getSubtype(),
-            Charset.forName("utf8")
+            Charset.forName(UTF_8)
     );
 
     @Autowired
@@ -109,13 +121,13 @@ public class AdminControllerTest {
     public void emptyDB() throws Exception {
         this.userRepository.deleteAll();
 
-        when(this.bCryptPasswordEncoder.encode(Mockito.anyString())).thenReturn("fakeHash");
+        when(this.bCryptPasswordEncoder.encode(Mockito.anyString())).thenReturn(FAKE_HASH);
         this.fakeUser = new User();
-        fakeUser.setId("0c39a7b4-b039-4d78-a0f8-333be7b0e718");
-        fakeUser.setFirstName("Fake");
-        fakeUser.setLastName("Fakes");
-        fakeUser.setUsername("fake@fake.bg");
-        fakeUser.setPassword(this.bCryptPasswordEncoder.encode("1111"));
+        fakeUser.setId(USER_ID);
+        fakeUser.setFirstName(USER_FIRST_NAME);
+        fakeUser.setLastName(USER_LAST_NAME);
+        fakeUser.setUsername(USER_USERNAME);
+        fakeUser.setPassword(this.bCryptPasswordEncoder.encode(PASSWORD));
         fakeUser.setAuthorities(new HashSet<>());
     }
 
@@ -124,25 +136,25 @@ public class AdminControllerTest {
     @WithMockUser(roles={"ADMIN"})
     public void allProfiles_returnsCorrectView() throws Exception {
         UserRegisterBindingModel userRegisterBindingModel = new UserRegisterBindingModel();
-        userRegisterBindingModel.setFirstName("Fake");
-        userRegisterBindingModel.setLastName("Fakes");
-        userRegisterBindingModel.setEmailRegister("fake@fake.bg");
-        userRegisterBindingModel.setPasswordRegister("1111");
-        userRegisterBindingModel.setConfirmPassword("1111");
+        userRegisterBindingModel.setFirstName(USER_FIRST_NAME);
+        userRegisterBindingModel.setLastName(USER_LAST_NAME);
+        userRegisterBindingModel.setEmailRegister(USER_USERNAME);
+        userRegisterBindingModel.setPasswordRegister(PASSWORD);
+        userRegisterBindingModel.setConfirmPassword(PASSWORD);
 
         this.mvc
-                .perform(get("/profiles")
-                        .flashAttr("userRegisterBindingModel", userRegisterBindingModel)
+                .perform(get(PROFILES)
+                        .flashAttr(USER_REGISTER_BINDING_MODEL, userRegisterBindingModel)
                         .with(csrf()))
-                .andExpect(view().name("fragments/base-layout"));
+                .andExpect(view().name(FRAGMENTS_BASE_LAYOUT_ROUTE));
     }
 
     @Test
     @WithMockUser(roles={"ADMIN"})
     public void allProfiles_returnsPassCorrectAttribute() throws Exception {
         this.mvc
-                .perform(get("/profiles").with(csrf()))
-                .andExpect(model().attributeExists("profiles", "procedures"));
+                .perform(get(PROFILES).with(csrf()))
+                .andExpect(model().attributeExists(PROFILES_ATTRIBUTE_NAME, PROCEDURES_ATTRIBUTE_NAME));
         verify(procedureService).getAllByDateAsc();
         verify(userService).extractAllUsersOrderedAlphabetically();
     }
@@ -153,11 +165,11 @@ public class AdminControllerTest {
     public void getProfile_ReturnsCorrectViewModel() throws Exception {
 
         UserServiceModel userServiceModel = new UserServiceModel();
-        userServiceModel.setId("0c39a7b4-b039-4d78-a0f8-333be7b0e718");
-        userServiceModel.setFirstName("Fake");
-        userServiceModel.setLastName("Fakes");
-        userServiceModel.setEmail("fake@fake.bg");
-        userServiceModel.setPasswordRegister(this.bCryptPasswordEncoder.encode("1111"));
+        userServiceModel.setId(USER_ID);
+        userServiceModel.setFirstName(USER_FIRST_NAME);
+        userServiceModel.setLastName(USER_LAST_NAME);
+        userServiceModel.setEmail(USER_USERNAME);
+        userServiceModel.setPasswordRegister(this.bCryptPasswordEncoder.encode(PASSWORD));
         UserRoleServiceModel userRoleServiceModel = new UserRoleServiceModel();
         userRoleServiceModel.setAuthority("ADMIN");
         List<UserRoleServiceModel> roles = new ArrayList< >();
@@ -169,12 +181,12 @@ public class AdminControllerTest {
         userViewModel.setRoles(userServiceModel.getAuthorities().stream().map(UserRoleServiceModel::getAuthority).collect(Collectors.toList()));
 
 
-        when(userService.extractUserById("0c39a7b4-b039-4d78-a0f8-333be7b0e718")).thenReturn(userServiceModel);
+        when(userService.extractUserById(USER_ID)).thenReturn(userServiceModel);
 
 
         String result = this.mvc
-                .perform(get("/api/profile{id}","id", "0c39a7b4-b039-4d78-a0f8-333be7b0e718")
-                .param("id", "0c39a7b4-b039-4d78-a0f8-333be7b0e718"))
+                .perform(get(API_PROFILE_ID,"id", USER_ID)
+                .param("id", USER_ID))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andReturn().getResponse().getContentAsString();
@@ -186,7 +198,7 @@ public class AdminControllerTest {
         assertTrue(result.contains(userViewModel.getRoles().get(0)));
 
 
-        verify(userService).extractUserById("0c39a7b4-b039-4d78-a0f8-333be7b0e718");
+        verify(userService).extractUserById(USER_ID);
 
     }
 
@@ -194,26 +206,26 @@ public class AdminControllerTest {
     @WithMockUser(roles={"ADMIN"})
     public void validPostOnEdit_CallEditOnServiceAndRedirectsToAll() throws Exception {
         UserRegisterBindingModel userRegisterBindingModel = new UserRegisterBindingModel();
-        userRegisterBindingModel.setFirstName("Fake");
-        userRegisterBindingModel.setLastName("Fakes");
-        userRegisterBindingModel.setEmailRegister("fake@fake.bg");
-        userRegisterBindingModel.setPasswordRegister("1111");
-        userRegisterBindingModel.setConfirmPassword("1111");
+        userRegisterBindingModel.setFirstName(USER_FIRST_NAME);
+        userRegisterBindingModel.setLastName(USER_LAST_NAME);
+        userRegisterBindingModel.setEmailRegister(USER_USERNAME);
+        userRegisterBindingModel.setPasswordRegister(PASSWORD);
+        userRegisterBindingModel.setConfirmPassword(PASSWORD);
 
 
-        when(userService.extractUserByEmail("fake@fake.bg")).thenReturn(new UserServiceModel());
+        when(userService.extractUserByEmail(USER_USERNAME)).thenReturn(new UserServiceModel());
         when(userService.editUser(any())).thenReturn(true);
 
         when(bindingResult.hasErrors()).thenReturn(true);
 
         this.mvc
                 .perform(post("/edit")
-                        .flashAttr("userRegisterBindingModel", userRegisterBindingModel)
-                        .flashAttr("bindingResult", this.bindingResult)
+                        .flashAttr(USER_REGISTER_BINDING_MODEL, userRegisterBindingModel)
+                        .flashAttr(BINDING_RESULT, this.bindingResult)
                         .with(csrf()))
-                .andExpect(view().name("redirect:/profiles"));
+                .andExpect(view().name(REDIRECT_PROFILES_ROUTE));
 
-        verify(userService).extractUserByEmail("fake@fake.bg");
+        verify(userService).extractUserByEmail(USER_USERNAME);
         verify(userService).editUser(any());
 
     }
@@ -223,13 +235,13 @@ public class AdminControllerTest {
     @WithMockUser(roles={"ADMIN"})
     public void editRole_CallServiceWithCorrectDataAndReturnSuccces() throws Exception {
 
-        String body = "email=pesho%40abv.bg&role=Moderator";
+        String body = EDIT_ROLE_REQUEST_BODY;
 
-        when(userService.editUserRole("pesho@abv.bg", "Moderator")).thenReturn(true);
+        when(userService.editUserRole(EDIT_ROLE_MAIL, MODERATOR_ROLE)).thenReturn(true);
 
 
         String result = this.mvc
-                .perform(post("/profile/roleEdit")
+                .perform(post(PROFILE_ROLE_EDIT)
                         .contentType(MediaType.TEXT_PLAIN)
                         .content(body.getBytes())
                         .with(csrf()))
@@ -237,9 +249,9 @@ public class AdminControllerTest {
                 .andExpect(content().contentType(APPLICATION_TEXT_UTF8))
                 .andReturn().getResponse().getContentAsString();
 
-        assertEquals("Success", result);
+        assertEquals(SUCCESS_MSG, result);
 
-        verify(userService).editUserRole("pesho@abv.bg", "Moderator");
+        verify(userService).editUserRole(EDIT_ROLE_MAIL, MODERATOR_ROLE);
 
     }
 
@@ -247,20 +259,20 @@ public class AdminControllerTest {
     @WithMockUser(roles={"ADMIN"})
     public void editRoleWithInvalidUser_ThrowsException() throws Exception {
 
-        String body = "email=pesho%40abv.bg&role=Moderator";
+        String body = EDIT_ROLE_REQUEST_BODY;
 
-        when(userService.editUserRole("pesho@abv.bg", "Moderator")).thenReturn(false);
+        when(userService.editUserRole(EDIT_ROLE_MAIL, MODERATOR_ROLE)).thenReturn(false);
 
 
         this.mvc
-                .perform(post("/profile/roleEdit")
+                .perform(post(PROFILE_ROLE_EDIT)
                         .contentType(MediaType.TEXT_PLAIN)
                         .content(body.getBytes())
                         .with(csrf()))
-                .andExpect(view().name("fragments/base-layout"));
+                .andExpect(view().name(FRAGMENTS_BASE_LAYOUT_ROUTE));
 
 
-        verify(userService).editUserRole("pesho@abv.bg", "Moderator");
+        verify(userService).editUserRole(EDIT_ROLE_MAIL, MODERATOR_ROLE);
 
     }
 
@@ -268,14 +280,14 @@ public class AdminControllerTest {
     @WithMockUser(roles={"ADMIN"})
     public void validPostOnDelete_CallDeleteOnServiceAndRedirectsToAll() throws Exception {
         ProfileDeleteBindingModel profileDeleteBindingModel = new ProfileDeleteBindingModel();
-        profileDeleteBindingModel.setId("0c39a7b4-b039-4d78-a0f8-333be7b0e718");
+        profileDeleteBindingModel.setId(USER_ID);
 
 
         this.mvc
-                .perform(post("/delete")
-                        .flashAttr("profileDeleteBindingModel", profileDeleteBindingModel)
+                .perform(post(DELETE_URL)
+                        .flashAttr(PROFILE_DELETE_BINDING_MODEL, profileDeleteBindingModel)
                         .with(csrf()))
-                .andExpect(view().name("redirect:/profiles"));
+                .andExpect(view().name(REDIRECT_PROFILES_ROUTE));
 
         verify(userService).deleteProfile(any());
 
@@ -286,16 +298,16 @@ public class AdminControllerTest {
     @WithMockUser(roles={"ADMIN"})
     public void logs_returnsCorrectView() throws Exception {
         this.mvc
-                .perform(get("/logs").with(csrf()))
-                .andExpect(view().name("fragments/base-layout"));
+                .perform(get(LOGS_URL).with(csrf()))
+                .andExpect(view().name(FRAGMENTS_BASE_LAYOUT_ROUTE));
     }
 
     @Test
     @WithMockUser(roles={"ADMIN"})
     public void logs_returnsPassCorrectAttribute() throws Exception {
         this.mvc
-                .perform(get("/logs").with(csrf()))
-                .andExpect(model().attributeExists("logViewModel"));
+                .perform(get(LOGS_URL).with(csrf()))
+                .andExpect(model().attributeExists(LOG_VIEW_MODEL_ATTRIBUTE_NAME));
 
         verify(logService).getLogsOrderedByDate();
     }
