@@ -85,6 +85,9 @@ public final class Constants {
     public static final String TITLE_USERS = "Потребители";
     public static final String SUCCESS_MESSAGE = "Success";
     public static final String TITLE_LOGS = "Логове";
+    public static final String EDITING_PROFILE_FAILURE = "Editing user %s failed.";
+    public static final String EDITING_ROLE_FAILURE = "Editing user role %s failed.";
+    public static final int BINDING_RESULT_MAX_ERROR = 4;
         //APPOINTMENT
     public static final String APPOINTMENT_CREATE_FAILURE_EXCEPTION = "Invalid data for creating appointment!";
     public static final String TITLE_SCHEDULE = "График";

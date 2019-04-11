@@ -34,8 +34,6 @@ import static org.vinevweb.cardiohristov.common.Constants.*;
 @Controller
 public class AdminController extends BaseController {
 
-
-
     private final UserService userService;
     private final ModelMapper modelMapper;
     private final ProcedureService procedureService;
@@ -102,20 +100,20 @@ public class AdminController extends BaseController {
 
         if (bindingResult.hasErrors()) {
 
-                if ( (String)bindingResult.getRawFieldValue("passwordRegister") != "" ||
-                        (String)bindingResult.getRawFieldValue("confirmPassword") != ""){
-                        return super.view("all-profiles", "userRegisterBindingModel", userRegisterBindingModel);
+            if ((String) bindingResult.getRawFieldValue("passwordRegister") != "" ||
+                    (String) bindingResult.getRawFieldValue("confirmPassword") != "") {
+                return super.view("all-profiles", "userRegisterBindingModel", userRegisterBindingModel);
 
-                }
+            }
 
-                if (bindingResult.getErrorCount() > 4 ){
-                    return super.view("all-profiles", "userRegisterBindingModel", userRegisterBindingModel);
-                }
+            if (bindingResult.getErrorCount() > BINDING_RESULT_MAX_ERROR) {
+                return super.view("all-profiles", "userRegisterBindingModel", userRegisterBindingModel);
+            }
         }
 
 
         if (!this.userService.editUser(this.modelMapper.map(userRegisterBindingModel, UserServiceModel.class))) {
-            throw new UserEditFailureException("Editing user " + userServiceModel.getEmail() + " failed.");
+            throw new UserEditFailureException(String.format(EDITING_PROFILE_FAILURE, userServiceModel.getEmail()));
         }
 
         return super.redirect("/profiles");
@@ -131,7 +129,7 @@ public class AdminController extends BaseController {
         boolean result = this.userService.editUserRole(email, role);
 
         if (!result) {
-            throw new UserEditFailureException("Editing user role" + email + " failed.");
+            throw new UserEditFailureException(String.format(EDITING_ROLE_FAILURE, email));
         }
 
         return SUCCESS_MESSAGE;
@@ -161,7 +159,6 @@ public class AdminController extends BaseController {
                         .collect(Collectors.toList())
         );
     }
-
 
 
 }
