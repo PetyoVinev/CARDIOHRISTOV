@@ -10,6 +10,5 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, String> {
 
-    void deleteAllByArticleId(String articleId);
 
 }

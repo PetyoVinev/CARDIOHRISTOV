@@ -10,20 +10,19 @@ import java.time.LocalDateTime;
 @Table(name = "procedures")
 public class Procedure extends BaseEntity {
 
-    @Column(name = "name", nullable = false)
+
     private String name;
 
     private String content;
 
-    @Column(name = "date", nullable = false)
     private LocalDateTime date;
 
-    @Column(name = "image_url", nullable = true)
     private String pictureUrl;
 
     public Procedure() {
     }
 
+    @Column(name = "name", nullable = false)
     public String getName() {
         return name;
     }
@@ -41,6 +40,7 @@ public class Procedure extends BaseEntity {
         this.content = content;
     }
 
+    @Column(name = "date", nullable = false)
     public LocalDateTime getDate() {
         return date;
     }
@@ -49,6 +49,7 @@ public class Procedure extends BaseEntity {
         this.date = date;
     }
 
+    @Column(name = "image_url", nullable = true)
     public String getPictureUrl() {
         return pictureUrl;
     }

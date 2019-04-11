@@ -9,16 +9,12 @@ import java.time.LocalDateTime;
 @Table(name = "appointments")
 public class Appointment extends BaseEntity {
 
-    @Column(name = "appointmentName", nullable = false)
     private String appointmentName;
 
-    @Column(name = "appointmentPhone", nullable = false)
     private String appointmentPhone;
 
-    @Column(name = "email", nullable = false)
     private String appointmentEmail;
 
-    @Column(name = "datetime", nullable = false)
     private LocalDateTime datetime;
 
     private String appointmentMessage;
@@ -26,6 +22,7 @@ public class Appointment extends BaseEntity {
     public Appointment() {
     }
 
+    @Column(name = "appointmentName", nullable = false)
     public String getAppointmentName() {
         return appointmentName;
     }
@@ -34,6 +31,7 @@ public class Appointment extends BaseEntity {
         this.appointmentName = appointmentName;
     }
 
+    @Column(name = "appointmentPhone", nullable = false)
     public String getAppointmentPhone() {
         return appointmentPhone;
     }
@@ -42,6 +40,7 @@ public class Appointment extends BaseEntity {
         this.appointmentPhone = appointmentPhone;
     }
 
+    @Column(name = "email", nullable = false)
     public String getAppointmentEmail() {
         return appointmentEmail;
     }
@@ -50,6 +49,7 @@ public class Appointment extends BaseEntity {
         this.appointmentEmail = appointmentEmail;
     }
 
+    @Column(name = "datetime", nullable = false)
     public LocalDateTime getDatetime() {
         return datetime;
     }
