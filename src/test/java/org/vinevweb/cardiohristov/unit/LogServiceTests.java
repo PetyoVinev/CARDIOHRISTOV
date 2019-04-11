@@ -60,7 +60,7 @@ public class LogServiceTests {
         assertEquals(USERNAME, argument.getValue().getUser());
         assertEquals(LocalDateTime.parse(DATETIME_EXPECTED), argument.getValue().getDateTime());
         assertEquals(ARTICLE_CREATE_MSG, argument.getValue().getEvent());
-        
+
 
     }
 

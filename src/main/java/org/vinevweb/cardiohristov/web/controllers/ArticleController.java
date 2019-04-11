@@ -54,18 +54,13 @@ public class ArticleController extends BaseController {
                 .collect(Collectors.toList());
         stringObjectMap.put("procedures", allProceduresProcedureViewModelSet);
 
-        List<AllArticlesViewModel> allArticlesViewModels = articleService.findAllByOrderByWrittenOnDesc().stream()
-                .map(p -> {
-                    AllArticlesViewModel allArticlesViewModel = modelMapper.map(p, AllArticlesViewModel.class);
-                    allArticlesViewModel.setAuthor(p.getAuthor().getFirstName() + " " + p.getAuthor().getLastName());
-                    allArticlesViewModel.setCommentsCount(p.getComments().size());
-                    return allArticlesViewModel;
-                })
-                .collect(Collectors.toList());
+        List<AllArticlesViewModel> allArticlesViewModels = getAllArticles();
         stringObjectMap.put("articles", allArticlesViewModels);
 
         return super.view("article-list", stringObjectMap);
     }
+
+
 
     @GetMapping("/create")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
@@ -119,19 +114,10 @@ public class ArticleController extends BaseController {
                 modelMapper.map(articleServiceModel, SingleArticleViewModel.class);
         singleArticleViewModel.setComments(getViewComments(articleServiceModel));
 
-        List<AllArticlesViewModel> allArticlesViewModels = articleService.findAllByOrderByWrittenOnDesc().stream()
-                .map(p -> {
-                    AllArticlesViewModel allArticlesViewModel = modelMapper.map(p, AllArticlesViewModel.class);
-                    allArticlesViewModel.setAuthor(p.getAuthor().getFirstName() + " " + p.getAuthor().getLastName());
-                    allArticlesViewModel.setCommentsCount(p.getComments().size());
-                    return allArticlesViewModel;
-                })
-                .collect(Collectors.toList());
-
         HashMap<String, Object> map = new HashMap<>(){{
             put("article", singleArticleViewModel);
             put("procedures", allProceduresProcedureViewModelSet);
-            put("articles", allArticlesViewModels);
+            put("articles", getAllArticles());
         }};
         return super.view("article-detail", map);
     }
@@ -156,6 +142,18 @@ public class ArticleController extends BaseController {
 
         }
         return singleArticleCommentViewModels.stream().sorted(Comparator.comparing(SingleArticleCommentViewModel::getWrittenOn, reverseOrder())).collect(Collectors.toUnmodifiableList());
+    }
+
+    private List<AllArticlesViewModel> getAllArticles() {
+        List<AllArticlesViewModel> allArticlesViewModels = articleService.findAllByOrderByWrittenOnDesc().stream()
+                .map(p -> {
+                    AllArticlesViewModel allArticlesViewModel = modelMapper.map(p, AllArticlesViewModel.class);
+                    allArticlesViewModel.setAuthor(p.getAuthor().getFirstName() + " " + p.getAuthor().getLastName());
+                    allArticlesViewModel.setCommentsCount(p.getComments().size());
+                    return allArticlesViewModel;
+                })
+                .collect(Collectors.toList());
+        return allArticlesViewModels;
     }
 
 

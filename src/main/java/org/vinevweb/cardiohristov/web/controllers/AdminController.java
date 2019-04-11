@@ -56,10 +56,12 @@ public class AdminController extends BaseController {
     public ModelAndView allProfiles(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
 
         Map<String, Object> stringObjectMap = new HashMap<>();
+
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()
                 .map(p -> modelMapper.map(p, AllProceduresProcedureViewModel.class))
                 .collect(Collectors.toList());
         stringObjectMap.put("procedures", allProceduresProcedureViewModelSet);
+
         List<AllUsersViewModel> allUsersViewModels = this.userService.extractAllUsersOrderedAlphabetically()
                 .stream()
                 .map(u -> {
@@ -69,6 +71,7 @@ public class AdminController extends BaseController {
                     return allUsersViewModel;
                 })
                 .collect(Collectors.toList());
+
         stringObjectMap.put("profiles", allUsersViewModels);
 
         return super.view("all-profiles", stringObjectMap);
