@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -33,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -71,6 +73,9 @@ public class AppointmentControllerTest {
 
     @Autowired
     private Gson gson;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Before
     public void emptyDB() throws Exception {
@@ -145,6 +150,7 @@ public class AppointmentControllerTest {
     }
 
     @Test
+    @WithMockUser(roles={"ADMIN"})
     public void checkAvailableDateTime_CallService() throws Exception {
 
         this.mvc
@@ -160,6 +166,7 @@ public class AppointmentControllerTest {
     }
 
     @Test
+    @WithMockUser(roles={"ADMIN"})
     public void getBusyHoursForDate_CallServiceWithDateAndReturnResult() throws Exception {
 
         String[][] expected = new String[1][1];
@@ -191,10 +198,8 @@ public class AppointmentControllerTest {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
-        this.gson  =
-        new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm").create();
-
       AppointmentServiceModel appointmentServiceModel = new AppointmentServiceModel();
+      appointmentServiceModel.setId(null);
         appointmentServiceModel.setAppointmentName("Boko Boko");
         appointmentServiceModel.setAppointmentPhone("1212121212");
         appointmentServiceModel.setAppointmentEmail("bokos@abv.bg");
@@ -202,15 +207,10 @@ public class AppointmentControllerTest {
         appointmentServiceModel.setAppointmentMessage("asd");
 
 
-        EditDeleteAppointmentViewModel expected = new EditDeleteAppointmentViewModel();
-        expected.setAppointmentName("Boko Boko");
-        expected.setAppointmentPhone("1212121212");
-        expected.setAppointmentEmail("bokos@abv.bg");
-        expected.setDatetime(LocalDateTime.parse("2019-04-16T09:00", formatter));
-        expected.setAppointmentMessage("asd");
-        expected.setAppointmentDate();
-        expected.setAppointmentTime();
-
+        EditDeleteAppointmentViewModel expectedModel =  this.modelMapper.map(appointmentServiceModel,
+                EditDeleteAppointmentViewModel.class);
+        expectedModel.setAppointmentTime();
+        expectedModel.setAppointmentDate();
 
 
         when(appointmentService.findById("1234")).thenReturn(appointmentServiceModel);
@@ -224,43 +224,18 @@ public class AppointmentControllerTest {
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8))
                 .andReturn().getResponse().getContentAsString();
 
-        EditDeleteAppointmentViewModel actual = this.gson.fromJson(result, EditDeleteAppointmentViewModel.class);
+        assertTrue(result.contains(expectedModel.getAppointmentName()));
+        assertTrue(result.contains(expectedModel.getAppointmentEmail()));
+        assertTrue(result.contains(expectedModel.getAppointmentMessage()));
+        assertTrue(result.contains(expectedModel.getAppointmentPhone()));
+        assertTrue(result.contains(expectedModel.getAppointmentDate()));
+        assertTrue(result.contains(expectedModel.getAppointmentTime()));
+        assertTrue(result.contains(expectedModel.getDatetime().format(formatter)));
 
-        assertEquals(expected.getAppointmentMessage(), actual.getAppointmentMessage());
-        assertEquals(expected.getDatetime(), actual.getDatetime());
-        assertEquals(expected.getAppointmentDate(), actual.getAppointmentDate());
-        assertEquals(expected.getAppointmentTime(), actual.getAppointmentTime());
-        assertEquals(expected.getAppointmentEmail(), actual.getAppointmentEmail());
-        assertEquals(expected.getAppointmentPhone(), actual.getAppointmentPhone());
-        assertEquals(expected.getAppointmentName(), actual.getAppointmentName());
 
         verify(appointmentService).findById("1234" );
 
     }
-
-    /*@Test
-    @WithMockUser(roles={"ADMIN"})
-    public void validPostOnCreate_CallCreateOnServiceAndRedirectsToAll() throws Exception {
-        AppointmentCreateBindingModel appointmentCreateBindingModel = new AppointmentCreateBindingModel();
-        appointmentCreateBindingModel.setAppointmentDate("23/04/2019 вторник");
-        appointmentCreateBindingModel.setAppointmentTime("08:30");
-
-        when(bindingResult.hasErrors()).thenReturn(false);
-        when(appointmentService.createAppointment(any())).thenReturn("1234");
-
-        this.mvc
-                .perform(post("/appointments/create")
-                        .flashAttr("appointmentCreateBindingModel", appointmentCreateBindingModel)
-                        .flashAttr("bindingResult" , bindingResult)
-                        .flashAttr("userRegisterBindingModel" , userRegisterBindingModel)
-                        .with(csrf()));
-
-        verify(appointmentService).createAppointment(any());
-
-    }
-*/
-
-
 
 
 }

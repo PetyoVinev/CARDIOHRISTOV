@@ -86,7 +86,9 @@ public class AdminController extends BaseController {
 
     @PostMapping("/edit")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ModelAndView editConfirm(@Valid @ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel, BindingResult bindingResult) {
+    public ModelAndView editConfirm(@Valid @ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel,
+                                    BindingResult bindingResult) {
+
         UserServiceModel userServiceModel = this.userService.extractUserByEmail(userRegisterBindingModel.getEmailRegister());
 
         if (!userRegisterBindingModel.getPasswordRegister().equals(userRegisterBindingModel.getConfirmPassword())) {
