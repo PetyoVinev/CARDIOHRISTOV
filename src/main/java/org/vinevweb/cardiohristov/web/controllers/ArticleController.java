@@ -47,7 +47,7 @@ public class ArticleController extends BaseController {
 
     @GetMapping("/all")
     @PageTitle(TITLE_ARTICLES)
-    public ModelAndView index(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
+    public ModelAndView getAll(@ModelAttribute("userRegisterBindingModel") UserRegisterBindingModel userRegisterBindingModel) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()
                 .map(p -> modelMapper.map(p, AllProceduresProcedureViewModel.class))

@@ -12,12 +12,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.vinevweb.cardiohristov.domain.models.service.ProcedureServiceModel;
 import org.vinevweb.cardiohristov.repositories.ArticleRepository;
 import org.vinevweb.cardiohristov.repositories.ProcedureRepository;
 import org.vinevweb.cardiohristov.services.ArticleService;
 import org.vinevweb.cardiohristov.services.ProcedureService;
 
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -103,6 +109,28 @@ public class ProcedureControllerTest {
                 .andExpect(view().name("redirect:/procedures/all"));
 
 
+
+    }
+
+    @Test
+    @WithMockUser(roles = {"ADMIN"})
+    public void getDetail_ReturnsCorrectViewModel() throws Exception {
+        ProcedureServiceModel procedureServiceModel = new ProcedureServiceModel();
+        procedureServiceModel.setName("name");
+        procedureServiceModel.setPictureUrl("url");
+        procedureServiceModel.setContent("content");
+        procedureServiceModel.setDate(LocalDateTime.now());
+
+        when(procedureService.findByName("name")).thenReturn(procedureServiceModel);
+
+        this.mvc
+                .perform(get("/procedures/detail/{name}", "name", "name")
+                        .param("name", "name"))
+                .andExpect(view().name("fragments/base-layout"))
+                .andExpect(model().attributeExists("procedures",  "procedure"));
+
+        verify(procedureService).getAllByDateAsc();
+        verify(procedureService).findByName("name");
 
     }
 
