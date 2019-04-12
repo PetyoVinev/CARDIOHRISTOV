@@ -34,6 +34,7 @@ import static org.vinevweb.cardiohristov.common.Constants.*;
 @Controller
 public class AdminController extends BaseController {
 
+
     private final UserService userService;
     private final ModelMapper modelMapper;
     private final ProcedureService procedureService;
@@ -125,6 +126,10 @@ public class AdminController extends BaseController {
     public String roleEditConfirm(@RequestBody String body, Principal principal) {
         String email = body.split("&")[0].split("=")[1].replace("%40", "@");
         String role = body.split("&")[1].split("=")[1];
+
+        if (role.equals(ROOT_ROLE_FROM_EDIT)) {
+            throw new IllegalArgumentException(ROOT_ROLE_NOT_EDITABLE);
+        }
 
         boolean result = this.userService.editUserRole(email, role);
 

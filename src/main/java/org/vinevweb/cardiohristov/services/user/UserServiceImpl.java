@@ -30,6 +30,8 @@ import static org.vinevweb.cardiohristov.common.Constants.*;
 @Service
 public class UserServiceImpl implements UserService {
 
+
+
     private final UserRepository userRepository;
     private final UserRoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -149,7 +151,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean editUserRole(String email, String role) {
+
         User userEntity = this.userRepository.findByUsername(email).orElse(null);
+
+        if(userEntity.getAuthorities().contains(this.roleRepository.findByAuthority(ROLE_ROOT).orElse(null))){
+            throw new IllegalArgumentException(ROOT_ADMIN_ROLE_NOT_EDITABLE);
+        }
 
         if (userEntity == null) {
             throw new UsernameNotFoundException(WRONG_NON_EXISTENT_EMAIL);
@@ -173,6 +180,10 @@ public class UserServiceImpl implements UserService {
     public void deleteProfile(UserServiceModel userServiceModel) {
 
         User user = userRepository.findById(userServiceModel.getId()).orElse(null);
+
+        if(user.getAuthorities().contains(this.roleRepository.findByAuthority(ROLE_ROOT).orElse(null))){
+            throw new IllegalArgumentException(ROOT_ADMIN_NOT_DELETABLE);
+        }
 
         Set<Comment> comments = new HashSet<>(user.getComments());
 

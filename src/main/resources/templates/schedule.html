@@ -294,6 +294,7 @@
                 url: 'http://localhost:8000/appointments/api/getAppointmentById',
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
+
                     $('#appointmentName').val(data.appointmentName);
                     $('#appointmentPhone').val(data.appointmentPhone);
                     $('#appointmentEmail').val(data.appointmentEmail);

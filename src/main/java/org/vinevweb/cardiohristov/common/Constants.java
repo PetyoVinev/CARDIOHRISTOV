@@ -56,6 +56,8 @@ public final class Constants {
     public static final String ADMIN = "admin";
     public static final String MODERATOR = "moderator";
     public static final String USER = "user";
+    public static final String ROOT_ADMIN_ROLE_NOT_EDITABLE = "Root admin role cannot be edited!";
+    public static final String ROOT_ADMIN_NOT_DELETABLE = "Root admin cannot be deleted!";
 
         //APPOINTMENT
     public static final String START_TIME = "00:01";
@@ -88,6 +90,8 @@ public final class Constants {
     public static final String EDITING_PROFILE_FAILURE = "Editing user %s failed.";
     public static final String EDITING_ROLE_FAILURE = "Editing user role %s failed.";
     public static final int BINDING_RESULT_MAX_ERROR = 4;
+    public static final String ROOT_ROLE_FROM_EDIT = "Root";
+    public static final String ROOT_ROLE_NOT_EDITABLE = "You can not edit root role!";
         //APPOINTMENT
     public static final String APPOINTMENT_CREATE_FAILURE_EXCEPTION = "Invalid data for creating appointment!";
     public static final String TITLE_SCHEDULE = "График";
