@@ -22,9 +22,9 @@ public final class Constants {
     public static final String PROCEDURE_DATETIME_FORMAT =  "yyyy-MM-dd'T'HH:mm";
 
     public static final String USER_EMAIL_COULD_NOT_BE_NULL = "Имейлът не може да е с нулева стойност.";
-    public static final String USER_EMAIL_COULD_NOT_BE_EMPTY = "Полето за имайл не може да е празно.";
+    public static final String USER_EMAIL_COULD_NOT_BE_EMPTY = "Полето за имейл не може да е празно.";
     public static final String USER_EMAIL_PATTERN = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
-    public static final String INVALID_EMAIL = "Невалиден имайл.";
+    public static final String INVALID_EMAIL = "Невалиден имейл.";
     public static final String USER_PASSWORD_COULD_NOT_BE_NULL = "Паролата не може да е с нулева стойност.";
     public static final String USER_PASSWORD_COULD_NOT_BE_EMPTY = "Полето за паролата не може да е празно.";
     public static final String USER_PASSWORD_REQUIREMENTS = "Паролата трябва да е с дължина между 4 и 20 символа.";
