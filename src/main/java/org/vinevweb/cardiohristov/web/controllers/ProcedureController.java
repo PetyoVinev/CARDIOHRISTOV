@@ -68,8 +68,8 @@ public class ProcedureController extends BaseController {
                 .map(procedureCreateBindingModel, ProcedureServiceModel.class);
 
 
-        /*String pictureUrl = this.cloudinaryService.uploadImage(procedureCreateBindingModel.getProcedurePicture());*/
-        String pictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq6jS89uE7QegpxXMefUXPFEY04QFVAir55Fu7RN3rBe81YbFuCQ";
+        String pictureUrl = this.cloudinaryService.uploadImage(procedureCreateBindingModel.getProcedurePicture());
+        /*String pictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq6jS89uE7QegpxXMefUXPFEY04QFVAir55Fu7RN3rBe81YbFuCQ";*/
         if (pictureUrl == null) {
             throw new ProcedureCreateFailureException(PROCEDURE_PICTURE_UPLOAD_FAILED);
         }
