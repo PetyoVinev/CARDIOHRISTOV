@@ -81,7 +81,6 @@ public class ArticleController extends BaseController {
         ArticleServiceModel articleServiceModel = this.modelMapper
                 .map(articleCreateBindingModel, ArticleServiceModel.class);
 
-
         String pictureUrl = this.cloudinaryService.uploadImage(articleCreateBindingModel.getArticlePicture());
         /*String pictureUrl = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq6jS89uE7QegpxXMefUXPFEY04QFVAir55Fu7RN3rBe81YbFuCQ";*/
         if (pictureUrl == null) {

@@ -16,6 +16,7 @@ import org.vinevweb.cardiohristov.domain.models.service.ProcedureServiceModel;
 import org.vinevweb.cardiohristov.repositories.ArticleRepository;
 import org.vinevweb.cardiohristov.repositories.ProcedureRepository;
 import org.vinevweb.cardiohristov.services.ArticleService;
+import org.vinevweb.cardiohristov.services.CloudinaryServiceImpl;
 import org.vinevweb.cardiohristov.services.ProcedureService;
 
 import java.time.LocalDateTime;
@@ -56,6 +57,9 @@ public class ProcedureControllerTest {
     @MockBean
     private ProcedureService procedureService;
 
+    @MockBean
+    private CloudinaryServiceImpl cloudinaryService;
+
     @Before
     public void emptyDB() throws Exception {
         this.procedureRepository.deleteAll();
@@ -91,7 +95,7 @@ public class ProcedureControllerTest {
     @Test
     @WithMockUser(roles={"MODERATOR"})
     public void validPostOnCreate_InsertsProcedureInDB() throws Exception {
-
+        when(cloudinaryService.uploadImage(any())).thenReturn("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq6jS89uE7QegpxXMefUXPFEY04QFVAir55Fu7RN3rBe81YbFuCQ");
         when(procedureService.createProcedure(any())).thenReturn(true);
         this.mvc
                 .perform(post(PROCEDURES_CREATE)

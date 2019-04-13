@@ -21,10 +21,7 @@ import org.vinevweb.cardiohristov.domain.models.service.UserServiceModel;
 import org.vinevweb.cardiohristov.domain.models.view.UserViewModel;
 import org.vinevweb.cardiohristov.repositories.ArticleRepository;
 import org.vinevweb.cardiohristov.repositories.TestimonialRepository;
-import org.vinevweb.cardiohristov.services.ArticleService;
-import org.vinevweb.cardiohristov.services.CommentService;
-import org.vinevweb.cardiohristov.services.ProcedureServiceImpl;
-import org.vinevweb.cardiohristov.services.TestimonialServiceImpl;
+import org.vinevweb.cardiohristov.services.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -67,6 +64,9 @@ public class ArticleControllerTest {
 
     @MockBean
     private ArticleService articleService;
+
+    @MockBean
+    private CloudinaryServiceImpl cloudinaryService;
 
     @MockBean
     private ProcedureServiceImpl procedureService;
@@ -115,7 +115,9 @@ public class ArticleControllerTest {
     @WithMockUser(roles = {"MODERATOR"})
     public void validPostOnCreate_InsertsArticleInDB() throws Exception {
 
+        when(cloudinaryService.uploadImage(any())).thenReturn("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQq6jS89uE7QegpxXMefUXPFEY04QFVAir55Fu7RN3rBe81YbFuCQ");
         when(articleService.createArticle(any())).thenReturn(true);
+
         this.mvc
                 .perform(post(ARTICLES_CREATE)
                         .with(csrf()))
