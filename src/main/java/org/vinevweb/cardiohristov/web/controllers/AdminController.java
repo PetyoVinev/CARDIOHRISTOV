@@ -156,12 +156,23 @@ public class AdminController extends BaseController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PageTitle(TITLE_LOGS)
     public ModelAndView logs() {
+
+        Map<String, Object> stringObjectMap = new HashMap<>();
+
+        List<AllProceduresProcedureViewModel> allProceduresProcedureViewModelSet = procedureService.getAllByDateAsc().stream()
+                .map(p -> modelMapper.map(p, AllProceduresProcedureViewModel.class))
+                .collect(Collectors.toList());
+        stringObjectMap.put("procedures", allProceduresProcedureViewModelSet);
+
+        List<LogViewModel> logViewModels = this.logService.getLogsOrderedByDate()
+                .stream()
+                .map(log -> this.modelMapper.map(log, LogViewModel.class))
+                .collect(Collectors.toList());
+        stringObjectMap.put("logViewModel", logViewModels);
+
         return super.view(
-                "logs", "logViewModel",
-                this.logService.getLogsOrderedByDate()
-                        .stream()
-                        .map(log -> this.modelMapper.map(log, LogViewModel.class))
-                        .collect(Collectors.toList())
+                "logs", stringObjectMap
+
         );
     }
 
